@@ -1,10 +1,7 @@
 services:
   db:
     image: postgres:15-bookworm
-    environment:
-     - POSTGRES_USER=root
-     - POSTGRES_PASSWORD=root
     ports:
-      - 33060:3306
+      - 5432/5432
     volumes:
-     - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
