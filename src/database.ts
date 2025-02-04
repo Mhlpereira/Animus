@@ -1,9 +1,9 @@
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 
 export class Database {
   private static instance: Pool;
 
-  private constructor() {} 
+  private constructor() { }
 
   public static getInstance(): Pool {
     if (!Database.instance) {
@@ -14,11 +14,17 @@ export class Database {
         database: process.env.POSTGRES_DB,
         port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
         ssl: process.env.POSTGRES_SSL === 'true',
-        max: 20, // Número máximo de conexões no pool
-        idleTimeoutMillis: 1000, // Fecha conexões inativas após 1s
-        connectionTimeoutMillis: 1000, // Timeout ao conectar
+        max: 20, 
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 5000, 
       });
     }
     return Database.instance;
   }
+
+  public static async getClient(): Promise<PoolClient> {
+    const pool = Database.getInstance();
+    return await pool.connect(); // Retorna um cliente específico da pool
+  }
 }
+
