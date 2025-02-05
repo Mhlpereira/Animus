@@ -57,7 +57,14 @@ export class UserModel {
         }
     }
 
-
+    static async getUserById(id: string): Promise<UserModel | null> {
+        const db = await Database.getClient();
+        const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            return null;
+        }
+        return new UserModel(result.rows[0]);
+    }
 
     fill(data: Partial<UserModel>): void {
         if (data.id !== undefined) this.id = data.id;
