@@ -17,12 +17,17 @@ Projeto desenvolvido para solucionar o problema de faltas dos alunos, permitindo
 
 -Configure seu .Env com essas var
     POSTGRES_HOST
+
     POSTGRES_PORT
+
     POSTGRES_USER
+
     POSTGRES_PASSWORD
+
     POSTGRES_DB
-    JWT_SECRET
     
+    JWT_SECRET
+
 - execute para gerar um secret para seu jwt
 ```
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
