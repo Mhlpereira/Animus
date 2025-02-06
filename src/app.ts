@@ -1,14 +1,18 @@
+import { Router } from 'express';
 import express from 'express';
-import { container } from './user-customer-register/user-customer-container';
-import { UserController } from './user/user-controller';
-import { authMiddleware } from './middleware/auth-middleware';
-
+import { AuthMiddleware } from './middleware/auth-middleware';
+import { container as middlewareContainer} from './middleware/container-middleware';
+import { userCustomerContainer } from './user-customer-register/user-customer-container';
+import { UserCustomerController } from './user-customer-register/user-customer-controller';
+import { UserModel } from './user/user-model';
+import { CustomerModel } from './customer/customer-model';
 
 export const app = express();
-
+const router = Router();
 app.use(express.json());
 
-const userController = container.get(UserController);
+const authMiddleware = middlewareContainer.get<AuthMiddleware>(AuthMiddleware);
+const userWithCustomer = userCustomerContainer.get<UserCustomerController<UserModel, CustomerModel>>(UserCustomerController);
 
 const unprotectedRoutes = [
     { method: "POST", path: "/register" },
@@ -16,16 +20,16 @@ const unprotectedRoutes = [
     { method: "POST", path: "/login" },
 ];
 
-app.use(authenticate(unprotectedRoutes));
+const authMiddlewareWrapper = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    authMiddleware.authenticate(req, res, next, unprotectedRoutes);
+};
+
+app.use(authMiddlewareWrapper);
 
 app.get("/", (req, res) => {
     res.json({ message: "Hello World!" });
 });
 
-app.use('/register', registerUserWithCustomer);
+router.use('/register', userWithCustomer.registerUserCustomerRoutes);
 app.use('/login')
 app.listen(3000, () => console.log("Running on 3000"));
-
-function authenticate(unprotectedRoutes: { method: string; path: string; }[]): any {
-    throw new Error('Function not implemented.');
-}

@@ -4,16 +4,16 @@ import jwt from "jsonwebtoken";
 import { IUserService } from "../user/user-interface";
 
 interface AuthenticatedRequest extends Request {
-    user: { id: string; email: string };
+    user?: { id: string; email: string };
 }
 
 @injectable()
-export class authMiddleware{
+export class AuthMiddleware{
     
     constructor(@inject('IUserService') private userService: IUserService){}
 
     async authenticate (req: AuthenticatedRequest, res: Response, 
-        next: NextFunction, unprotectedRoutes) {
+        next: NextFunction, unprotectedRoutes: { method: string; path: string; }[]) {
     const isUnprotectedRoute = unprotectedRoutes.some(
         (route) => route.method === req.method && req.path.startsWith(route.path)
     );
