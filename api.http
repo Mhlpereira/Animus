@@ -5,6 +5,7 @@ Content-Type: application/json
 {
   "email": "mario@mario.com",
   "password": "secret",
+  "confirmPassword": "secret",
   "name": "Mario",
   "birthday": "1985-01-01"
 }

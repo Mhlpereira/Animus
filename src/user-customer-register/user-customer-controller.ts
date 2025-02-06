@@ -21,7 +21,7 @@ export class UserCustomerController<TUser, TCustomer> {
         private async registerUserWithCustomer (req, res) {
             try{
             const registerDTO = req.body as RegisterDTO;
-            
+            console.log("Controller antes de chamar", registerDTO);
             if(registerDTO.password !== registerDTO.confirmPassword){
                 res.status(400).json({message: "Passwords do not match"});
                 return;

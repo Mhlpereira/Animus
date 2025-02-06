@@ -20,7 +20,7 @@ export class UserCustomerService<TUserModel, TCustomerModel> implements IUserCus
         if(!confirmedPassword){
             throw new Error("Encrypted password does not match");
         }
-
+        console.log("Service antes de criar",data );
         const { user, customer } = await this.userModel.createUserWithCustomer({
             email: data.email,
             password: hashedPassword,
@@ -28,7 +28,7 @@ export class UserCustomerService<TUserModel, TCustomerModel> implements IUserCus
             name: data.name,
             birthday: data.birthday
         });
-
+        console.log("Service depois de criar", user, customer);
         return { user: user as TUserModel, customer: customer as TCustomerModel };
     }
 
