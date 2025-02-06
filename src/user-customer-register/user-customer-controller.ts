@@ -1,14 +1,15 @@
 import { RegisterDTO } from './DTO/registerDTO';
+import { IUserCustomerService } from './user-customer-interface';
 import { Router , Request as req , Response as res } from "express";
-import { UserCustomerService } from "./user-customer-service";
 import { injectable , inject } from 'inversify';
 
 @injectable()
-export class UserCustomerController{
+export class UserCustomerController<TUser, TCustomer> {
     public registerUserCustomerRoutes = Router();
 
     constructor(
-        @inject(UserCustomerService) private userCustomerService: UserCustomerService) {
+        @inject('IUserCustomerService') 
+        private userCustomerService: IUserCustomerService<TUser, TCustomer>) {
             this.initializeRoutes();
         }
 

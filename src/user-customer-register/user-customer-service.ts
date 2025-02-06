@@ -1,17 +1,18 @@
-import { CustomerModel } from './../customer/customer-model';
-import { UserModel } from './../user/user-model';
 import bcrypt from 'bcrypt';
 import { RegisterDTO } from './DTO/registerDTO';
 import { IUserModel } from '../user/user-interface';
+import { injectable , inject } from 'inversify';
+import { IUserCustomerService } from './user-customer-interface';
 
 
-export class UserCustomerService {
+@injectable()
+export class UserCustomerService<TUserModel, TCustomerModel> implements IUserCustomerService<TUserModel, TCustomerModel> {
 
 
-    constructor(private userModel: IUserModel) {}
+    constructor(@inject('IUserModel') private userModel: IUserModel ) {}
 
 
-    async createUserWithCustomer(data: RegisterDTO): Promise<{ user: UserModel, customer: CustomerModel }> {
+    async createUserWithCustomer(data: RegisterDTO): Promise<{ user: TUserModel, customer: TCustomerModel }> {
 
         const hashedPassword = await this.hashPassword(data.password);
         const confirmedPassword = await this.comparePassword(data.password, hashedPassword);
@@ -28,7 +29,7 @@ export class UserCustomerService {
             birthday: data.birthday
         });
 
-        return { user, customer };
+        return { user: user as TUserModel, customer: customer as TCustomerModel };
     }
 
 

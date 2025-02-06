@@ -7,3 +7,8 @@ export interface IUserModel{
     getUserById(id: string): Promise<UserModel | null>;
     getUserByEmail(email: string): Promise<UserModel | null>;
 }
+
+export interface IUserService{
+    getUserById(id: string): Promise<UserModel | null>;
+    getUserByEmail(email: string): Promise<UserModel | null>;
+}

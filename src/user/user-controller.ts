@@ -11,6 +11,9 @@ export class UserController{
             this.initializeRoutes();
         }
 
+        private initializeRoutes() {
+            this.registerUserCustomerRoutes.get('/',)
+        }
     
 }
 

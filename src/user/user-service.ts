@@ -1,12 +1,11 @@
-import { UserModel } from "./user-model";
+import { inject, injectable } from "inversify";
+import { IUserModel, IUserService } from "./user-interface";
 
-export class UserService {
+@injectable()
+export class UserService implements IUserService {
 
-    private userModel: UserModel;
 
-    constructor(userModel: UserModel) {
-        this.userModel = userModel;
-    }
+    constructor(@inject('IUserModel') private userModel: IUserModel) {}    
 
     async getUserById(id: string) {
         return this.userModel.getUserById(id);
