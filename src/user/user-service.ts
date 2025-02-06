@@ -2,9 +2,19 @@ import { UserModel } from "./user-model";
 
 export class UserService {
 
-    async getUserById(id: string) {
-        return new UserModel({
-            id: id,
-        });
+    private userModel: UserModel;
+
+    constructor(userModel: UserModel) {
+        this.userModel = userModel;
     }
+
+    async getUserById(id: string) {
+        return this.userModel.getUserById(id);
+    }
+
+    async getUserByEmail(email: string) {
+        return this.userModel.getUserByEmail(email);
+    }
+
+
 }

@@ -1,11 +1,15 @@
 import express from 'express';
-import { registerUserCustomerRoutes } from './user-customer-register/user-customer-controller';
+import { } from './user-customer-register/user-customer-controller';
 import jwt from 'jsonwebtoken';
-import { UserService } from './user/user-service';
+
+import { container } from './user-customer-register/user-customer-container';
+import { UserController } from './user/user-controller';
 
 export const app = express();
 
 app.use(express.json());
+
+const userController = container.get(UserController);
 
 const unprotectedRoutes = [
     { method: "POST", path: "/register" },
@@ -17,7 +21,7 @@ app.use(async (req, res, next) => {
     const isUnprotectedRoute = unprotectedRoutes.some(
         (route) => route.method === req.method && req.path.startsWith(route.path)
     );
-    
+
     if (isUnprotectedRoute) {
         return next();
     }
@@ -29,12 +33,12 @@ app.use(async (req, res, next) => {
         return;
     }
 
-    try{
-        const payload = jwt.verify(token, process.env.JWT_SECRET) as { 
+    try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET) as {
             id: string;
             email: string;
         };
-        const userService = new UserService();
+        const userS
         const user = await userService.getUserById(payload.id);
         if (!user) {
             res.status(401).json({ message: "Failed to authenticate user token" });
@@ -42,7 +46,7 @@ app.use(async (req, res, next) => {
         }
         req.user = user as { id: string; email: string };
         next();
-    }catch(e){
+    } catch (e) {
         res.status(401).json({ message: "Failed to authenticate token" });
     }
 });
@@ -52,5 +56,5 @@ app.get("/", (req, res) => {
 });
 
 app.use('/register', registerUserCustomerRoutes);
-
+app.use('/login')
 app.listen(3000, () => console.log("Running on 3000"));

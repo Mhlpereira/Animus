@@ -1,11 +1,17 @@
+import { CustomerModel } from './../customer/customer-model';
+import { UserModel } from './../user/user-model';
 import bcrypt from 'bcrypt';
 import { RegisterDTO } from './DTO/registerDTO';
-import { UserModel } from '../user/user-model';
+import { IUserModel } from '../user/user-interface';
+
 
 export class UserCustomerService {
 
 
-    async registerUser(data: RegisterDTO) {
+    constructor(private userModel: IUserModel) {}
+
+
+    async createUserWithCustomer(data: RegisterDTO): Promise<{ user: UserModel, customer: CustomerModel }> {
 
         const hashedPassword = await this.hashPassword(data.password);
         const confirmedPassword = await this.comparePassword(data.password, hashedPassword);
@@ -14,14 +20,15 @@ export class UserCustomerService {
             throw new Error("Encrypted password does not match");
         }
 
-        return await UserModel.createWithCustomer({
+        const { user, customer } = await this.userModel.createUserWithCustomer({
             email: data.email,
-            hashedPassword: hashedPassword,
+            password: hashedPassword,
+            confirmPassword: data.confirmPassword,
             name: data.name,
             birthday: data.birthday
         });
 
-
+        return { user, customer };
     }
 
 

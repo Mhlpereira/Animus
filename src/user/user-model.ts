@@ -1,10 +1,11 @@
 import { PoolClient } from "pg";
 import { Database } from "../database";
 import { v4 as uuid } from "uuid";
-import { hash } from "crypto";
 import { CustomerModel } from "../customer/customer-model";
+import { IUserModel } from "./user-interface";
+import { RegisterDTO } from "../user-customer-register/DTO/registerDTO";
 
-export class UserModel {
+export class UserModel implements IUserModel {
     id: string;
     email: string;
     password: string;
@@ -14,15 +15,16 @@ export class UserModel {
         this.fill(data);
     }
 
-    static async createWithCustomer(
-        data: { email: string; hashedPassword: string; name: string; birthday: Date },
+    async createUserWithCustomer(
+        data: RegisterDTO,
         options?: { connection?: PoolClient }
     ): Promise<{user:UserModel, customer:CustomerModel}> {
 
-        if (!data.email || !data.hashedPassword || !data.name || !data.birthday) {
+        if (!data.email || !data.password || !data.name || !data.birthday) {
             throw new Error("Every field is required");
         }
 
+        console.log(data);
         const db = options?.connection ?? await Database.getClient();
         const created_at = new Date();
         const id = uuid();
@@ -30,7 +32,7 @@ export class UserModel {
             await db.query('BEGIN');
             const result = await db.query(
                 'INSERT INTO users (id, email, password, created_at) VALUES ($1, $2, $3, $4) RETURNING *',
-                [id, data.email, data.hashedPassword, created_at]
+                [id, data.email, data.password, created_at]
             );
 
             const user = new UserModel(result.rows[0]);
@@ -57,9 +59,18 @@ export class UserModel {
         }
     }
 
-    static async getUserById(id: string): Promise<UserModel | null> {
+    async getUserById(id: string): Promise<UserModel | null> {
         const db = await Database.getClient();
         const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            return null;
+        }
+        return new UserModel(result.rows[0]);
+    }
+
+    async getUserByEmail(email: string): Promise<UserModel | null> {
+        const db = await Database.getClient();
+        const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         if (result.rows.length === 0) {
             return null;
         }

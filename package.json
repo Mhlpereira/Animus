@@ -21,8 +21,10 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "inversify": "^6.2.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
