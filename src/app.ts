@@ -4,14 +4,13 @@ import { AuthMiddleware } from './middleware/auth-middleware';
 import { container } from './container';
 import { UserModel } from './user/user-model';
 import { CustomerModel } from './customer/customer-model';
-import { UserCustomerController } from './user-customer-register/user-customer-controller';
 
 export const app = express();
 const router = Router();
 app.use(express.json());
 
 const authMiddleware = container.get<AuthMiddleware>(AuthMiddleware);
-const userWithCustomer = container.get<UserCustomerController<UserModel, CustomerModel>>(UserCustomerController);
+
 
 
 app.use(authMiddleware.authenticate());

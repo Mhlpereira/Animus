@@ -3,7 +3,7 @@ import { Database } from "../database";
 import { v4 as uuid } from "uuid";
 import { CustomerModel } from "../customer/customer-model";
 import { IUserModel } from "./user-interface";
-import { RegisterDTO } from "../user-customer-register/DTO/registerDTO";
+import { RegisterDTO } from "./DTO/registerDTO";
 
 export class UserModel implements IUserModel {
     id: string;
