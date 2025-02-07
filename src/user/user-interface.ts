@@ -3,13 +3,13 @@ import { UserModel } from "./user-model";
 import { RegisterDTO } from "./DTO/registerDTO";
 
 export interface IUserModel{
-    createUserWithCustomer(data: RegisterDTO): Promise<{ user: UserModel, customer: CustomerModel }>;
+    createUserWithCustomer(data: RegisterDTO): Promise<{user: TUserModel, customer: TCustomerModel }>;
     getUserById(id: string): Promise<UserModel | null>;
     getUserByEmail(email: string): Promise<UserModel | null>;
 }
 
-export interface IUserService{
-    createUserWithCustomer(data: RegisterDTO): Promise<{ user: UserModel, customer: CustomerModel }>;
+export interface IUserService<TUserModel, TCustomerModel>{
+    createUserWithCustomer(data: RegisterDTO): Promise<{user: TUserModel, customer: TCustomerModel }>;
     getUserById(id: string): Promise<UserModel | null>;
     getUserByEmail(email: string): Promise<UserModel | null>;
     hashPassword(password: string): Promise<string>;

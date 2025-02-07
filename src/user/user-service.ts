@@ -4,7 +4,7 @@ import { RegisterDTO } from "./DTO/registerDTO";
 import bcrypt from "bcrypt";
 
 @injectable()
-export class UserService<TUserModel, TCustomerModel>  implements IUserService {
+export class UserService<TUserModel, TCustomerModel>  implements IUserService<TUserModel, TCustomerModel>{
 
 
     constructor(@inject('IUserModel') private userModel: IUserModel) {}    
