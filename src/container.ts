@@ -8,7 +8,7 @@ import { AuthMiddleware } from './middleware/auth-middleware';
 const container = new Container();
 
 container.bind<IUserModel>('IUserModel').to(UserModel);
-container.bind<IUserService< UserModel, CustomerModel>>('IUserService').to(UserService);
+container.bind<IUserService>('IUserService').to(UserService);
 container.bind<AuthMiddleware>(AuthMiddleware).toSelf();
 
 export { container };

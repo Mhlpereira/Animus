@@ -3,7 +3,8 @@ import { Database } from "../database";
 import { v4 as uuid } from "uuid";
 import { CustomerModel } from "../customer/customer-model";
 import { IUserModel } from "./user-interface";
-import { RegisterDTO } from "./DTO/registerUserDTO";
+import { RegisterDTO } from "../auth/DTO/register-DTO";
+import { UserCreateDTO } from "./DTO/user-create-DTO";
 
 export class UserModel implements IUserModel {
     id: string;
@@ -15,13 +16,13 @@ export class UserModel implements IUserModel {
         this.fill(data);
     }
 
-    async createUserWithCustomer(
-        data: RegisterDTO,
+    async createUser(
+        data: UserCreateDTO,
         options?: { connection?: PoolClient }
-    ): Promise<{user:UserModel, customer:CustomerModel}> {
+    ): Promise<{user:UserModel}> {
 
-        if (!data.email || !data.password || !data.name || !data.birthday) {
-            throw new Error("Every field is required");
+        if (!data.email || !data.password) {
+            throw new Error("Email or password is missing!");
         }
 
         console.log(data);
@@ -37,15 +38,10 @@ export class UserModel implements IUserModel {
 
             const user = new UserModel(result.rows[0]);
             console.log(user);
-            const customer = await CustomerModel.create(db ,{
-                name: data.name,
-                birthday: data.birthday,
-                userId: user.id
-            });
 
             await db.query('COMMIT');
 
-            return {user, customer};
+            return {user};
 
 
         }catch(e){

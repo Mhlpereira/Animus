@@ -1,10 +1,11 @@
 import { inject, injectable } from "inversify";
 import { IUserModel, IUserService } from "./user-interface";
-import { RegisterDTO } from "./DTO/registerUserDTO";
 import bcrypt from "bcrypt";
+import { UserModel } from "./user-model";
+import { UserCreateDTO } from "./DTO/user-create-DTO";
 
 @injectable()
-export class UserService<TUserModel, TCustomerModel>  implements IUserService<TUserModel, TCustomerModel>{
+export class UserService  implements IUserService{
 
 
     constructor(@inject('IUserModel') private userModel: IUserModel) {}    
@@ -17,7 +18,7 @@ export class UserService<TUserModel, TCustomerModel>  implements IUserService<TU
         return this.userModel.getUserByEmail(email);
     }
 
-    async createUserWithCustomer(data: RegisterDTO): Promise<{ user: TUserModel, customer: TCustomerModel }> {
+    async createUser(data: UserCreateDTO): Promise<{ user: UserModel}> {
 
         const hashedPassword = await this.hashPassword(data.password);
         const confirmedPassword = await this.comparePassword(data.password, hashedPassword);
@@ -26,15 +27,12 @@ export class UserService<TUserModel, TCustomerModel>  implements IUserService<TU
             throw new Error("Encrypted password does not match");
         }
         console.log("Service antes de criar",data );
-        const { user, customer } = await this.userModel.createUserWithCustomer({
+        const { user } = await this.userModel.createUser({
             email: data.email,
             password: hashedPassword,
-            confirmPassword: data.confirmPassword,
-            name: data.name,
-            birthday: data.birthday
         });
-        console.log("Service depois de criar", user, customer);
-        return { user: user as TUserModel, customer: customer as TCustomerModel };
+        console.log("Service depois de criar", user);
+        return { user };
     }
 
 

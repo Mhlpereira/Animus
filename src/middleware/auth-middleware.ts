@@ -9,7 +9,8 @@ interface AuthenticatedRequest extends Request {
 
 @injectable()
 export class AuthMiddleware {
-    constructor(@inject('IUserService') private userService: IUserService< user: TUser,customer: TCustomer>) { }
+
+    constructor(@inject('IUserService') private userService: IUserService< user: TUserModel,customer: TCustomerModel>) { }
 
 
 
@@ -17,8 +18,8 @@ export class AuthMiddleware {
         return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             console.log("Entrou no middleware");
             const unprotectedRoutes = [
-                { method: "POST", path: "/register" },
                 { method: "GET", path: "/" },
+                { method: "POST", path: "/register" },
                 { method: "POST", path: "/login" },
             ];
 

@@ -1,15 +1,14 @@
-import { CustomerModel } from '../customer/customer-model';
 import { UserModel } from "./user-model";
-import { RegisterDTO } from "./DTO/registerUserDTO";
+import { UserCreateDTO } from './DTO/user-create-DTO';
 
 export interface IUserModel{
-    createUserWithCustomer(data: RegisterDTO): Promise<{user: UserModel,customer: CustomerModel }>;
+    createUser(data: {email: string, password: string }): Promise<{user: UserModel}>;
     getUserById(id: string): Promise<UserModel | null>;
     getUserByEmail(email: string): Promise<UserModel | null>;
 }
 
-export interface IUserService<TUserModel, TCustomerModel>{
-    createUserWithCustomer(data: RegisterDTO): Promise<{user: TUserModel, customer: TCustomerModel }>;
+export interface IUserService{
+    createUser(data: UserCreateDTO): Promise<{user: UserModel }>;
     getUserById(id: string): Promise<UserModel | null>;
     getUserByEmail(email: string): Promise<UserModel | null>;
     hashPassword(password: string): Promise<string>;
