@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { IUserModel, IUserService } from "./user-interface";
-import { RegisterDTO } from "./DTO/registerDTO";
+import { RegisterDTO } from "./DTO/registerUserDTO";
 import bcrypt from "bcrypt";
 
 @injectable()

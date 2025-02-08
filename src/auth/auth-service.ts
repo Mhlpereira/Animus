@@ -1,22 +1,16 @@
 import { inject } from "inversify";
-import { Router } from "express";
-import { httpGet, BaseHttpController, interfaces, controller, httpPost } from "inversify-express-utils";
-import { RegisterDTO } from "./DTO/registerUserDTO";
-import { IUserService } from "./user-interface";
+import { UserModel } from "../user/user-model";
+import { IUserService } from "../user/user-interface";
+import { CustomerModel } from "../customer/customer-model";
+import { RegisterDTO } from "../user/DTO/registerUserDTO";
 
 
-@controller('/user')
-export class UserController<TUser, TCustomer>  {
-    public registerUserCustomerRoutes = Router();
+export class LoginService{
 
-    constructor(
-        @inject('IUserCustomerService')
-        private userService: IUserService<TUser, TCustomer>) {
+    constructor(@inject('IUserService') private userService: IUserService<UserModel, CustomerModel>) {
     }
 
-
-    @httpPost('/')
-    private async registerUserWithCustomer(req, res) {
+    async registerUserWithCustomer(req, res) {
         try {
             const registerDTO = req.body as RegisterDTO;
             console.log("Controller antes de chamar", registerDTO);
@@ -31,6 +25,7 @@ export class UserController<TUser, TCustomer>  {
             res.status(400).json({ message: e.message });
         }
     };
+
+    async login(data: {email: string, password: string}) {
+        const userModel = await UserModel.getUserByEmail(data.email);
 }
-
-
