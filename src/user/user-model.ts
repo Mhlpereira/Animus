@@ -1,9 +1,7 @@
 import { PoolClient } from "pg";
 import { Database } from "../database";
 import { v4 as uuid } from "uuid";
-import { CustomerModel } from "../customer/customer-model";
 import { IUserModel } from "./user-interface";
-import { RegisterDTO } from "../auth/DTO/register-DTO";
 import { UserCreateDTO } from "./DTO/user-create-DTO";
 
 export class UserModel implements IUserModel {

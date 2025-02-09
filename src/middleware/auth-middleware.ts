@@ -10,7 +10,7 @@ interface AuthenticatedRequest extends Request {
 @injectable()
 export class AuthMiddleware {
 
-    constructor(@inject('IUserService') private userService: IUserService< user: TUserModel,customer: TCustomerModel>) { }
+    constructor(@inject('IUserService') private userService: IUserService) { }
 
 
 

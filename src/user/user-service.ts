@@ -10,14 +10,6 @@ export class UserService  implements IUserService{
 
     constructor(@inject('IUserModel') private userModel: IUserModel) {}    
 
-    async getUserById(id: string) {
-        return this.userModel.getUserById(id);
-    }
-
-    async getUserByEmail(email: string) {
-        return this.userModel.getUserByEmail(email);
-    }
-
     async createUser(data: UserCreateDTO): Promise<{ user: UserModel}> {
 
         const hashedPassword = await this.hashPassword(data.password);
@@ -35,6 +27,14 @@ export class UserService  implements IUserService{
         return { user };
     }
 
+    
+    async getUserById(id: string) {
+        return this.userModel.getUserById(id);
+    }
+
+    async getUserByEmail(email: string) {
+        return this.userModel.getUserByEmail(email);
+    }
 
     async hashPassword(password: string): Promise<string> {
         return bcrypt.hashSync(password, 10);
