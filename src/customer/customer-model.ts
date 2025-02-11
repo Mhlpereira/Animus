@@ -29,11 +29,11 @@ export class CustomerModel implements ICustomerModel{
                 'INSERT INTO customers (id, name, birthday, created_at, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
                 [id, data.name, data.birthday, created_at, data.userId]
             );
-            const customer = result.rows[0];
-            console.log(customer);
+            const customer = new CustomerModel (result.rows[0]);
 
             await db.query('COMMIT');
-            return customer;
+            console.log('dentro do mdel',customer);
+            return {customer};
         } catch (e) {
             await db.query('ROLLBACK');
             throw new Error(`Error creating user: ${e.message}`);

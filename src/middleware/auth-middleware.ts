@@ -19,14 +19,14 @@ export class AuthMiddleware {
             console.log("Entrou no middleware");
             const unprotectedRoutes = [
                 { method: "GET", path: "/" },
-                { method: "POST", path: "/register" },
+                { method: "POST", path: "/" },
                 { method: "POST", path: "/login" },
             ];
 
             const isUnprotectedRoute = unprotectedRoutes.some(
                 (route) => route.method === req.method && req.path.startsWith(route.path)
             );
-            console.log("isUnprotectedRoute", isUnprotectedRoute);
+
             if (isUnprotectedRoute) {
                 console.log("Dentro do if unprotected route")
                 return next();

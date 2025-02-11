@@ -1,22 +1,22 @@
+import 'reflect-metadata';
 import express from 'express';
 import { AuthMiddleware } from './middleware/auth-middleware';
-import { container } from './container';
 import { InversifyExpressServer } from 'inversify-express-utils';
+import { container } from './container';
+import './auth/auth-controller';
 
 
 const app = new InversifyExpressServer(container);
+const authMiddleware = container.get(AuthMiddleware);
 
-app.setConfig((server) => server.use(express.json()));
-
-const authMiddleware = container.get<AuthMiddleware>(AuthMiddleware);
-
-
-
-app.use(authMiddleware.authenticate());
-app.get("/", (req, res) => {
-    res.json({ message: "Hello World!" });
+app.setConfig((server) => {
+    server.use(express.json());
+    server.use(authMiddleware.authenticate());
 });
 
-app.use('/', router);
 
-app.listen(3000, () => console.log("Running on 3000"));
+
+const server = app.build();
+
+
+server.listen(3000, () => console.log("Running on 3000"));

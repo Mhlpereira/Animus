@@ -11,7 +11,7 @@ export class UserService  implements IUserService{
     constructor(@inject('IUserModel') private userModel: IUserModel) {}    
 
     async createUser(data: UserCreateDTO): Promise<{ user: UserModel}> {
-
+        console.log('entrou no user service');
         const hashedPassword = await this.hashPassword(data.password);
         const confirmedPassword = await this.comparePassword(data.password, hashedPassword);
 

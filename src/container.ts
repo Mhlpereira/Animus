@@ -13,6 +13,6 @@ container.bind<IUserModel>('IUserModel').to(UserModel);
 container.bind<IUserService>('IUserService').to(UserService);
 container.bind<ICustomerModel>('ICustomerModel').to(CustomerModel);
 container.bind<ICustomerService>('ICustomerService').to(CustomerService);
-container.bind<AuthMiddleware>(AuthMiddleware).toSelf();
+container.bind(AuthMiddleware).toSelf();
 
 export { container };
