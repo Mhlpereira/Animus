@@ -3,7 +3,7 @@ import express from 'express';
 import { AuthMiddleware } from './middleware/auth-middleware';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import { container } from './shared/container/container';
-import './auth/auth-controller';
+import './shared/routes/routes';
 
 
 const app = new InversifyExpressServer(container);

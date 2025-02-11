@@ -3,7 +3,7 @@ POST http://localhost:3000/
 Content-Type: application/json
 
 {
-  "email": "mario@mario.com",
+  "email": "ma23rio@mario.com",
   "password": "secret",
   "confirmPassword": "secret",
   "name": "Mario",
