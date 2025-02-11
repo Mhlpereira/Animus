@@ -32,7 +32,7 @@ export class CustomerModel implements ICustomerModel{
             const customer = new CustomerModel (result.rows[0]);
 
             await db.query('COMMIT');
-            console.log('dentro do mdel',customer);
+
             return {customer};
         } catch (e) {
             await db.query('ROLLBACK');

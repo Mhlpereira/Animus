@@ -1,3 +1,4 @@
+import { CustomerOutputDTO } from './../customer/DTO/output-customer-DTO';
 import { controller, httpGet, httpPost, requestBody, response } from "inversify-express-utils";
 import { RegisterDTO } from "./DTO/register-DTO";
 import { inject } from "inversify";
@@ -7,6 +8,7 @@ import { CustomerCreateDTO } from "../customer/DTO/create-customer-DTO";
 import { ICustomerService } from "../customer/customer-interface";
 import { RegisterOutputDTO } from "./DTO/register-output-DTO";
 import { Response } from "express";
+import { UserOutputDTO } from "../user/DTO/output-user-DTO";
 
 
 @controller('/')
@@ -25,7 +27,6 @@ export class AuthController {
 
     @httpPost('/')
     async register(@requestBody() body: RegisterDTO, @response() res: Response) {
-        console.log("entrou no register!")
         if (body.password !== body.confirmPassword) {
             res.status(400).json({ message: "Passwords do not match" });
             return;
@@ -36,8 +37,10 @@ export class AuthController {
             password: body.password
         }
 
-        console.log('antes de criar o usuário',userCreateDto)
         const { user } = await this.userService.createUser(userCreateDto);
+
+        const userOutPutDTO = new UserOutputDTO();
+        
 
         const customerCreateDTO: CustomerCreateDTO = {
             name: body.name,
@@ -45,13 +48,17 @@ export class AuthController {
             userId: user.id
         }
 
-        console.log('Depois de criar o usuário',customerCreateDTO)
-        const { customer } = await this.customerService.createCustomer(customerCreateDTO)
-        console.log('Depois de criar o cliente', customer);
+        const { customer } = await this.customerService.createCustomer(customerCreateDTO);
+
+        const customerOutputDTO = new CustomerOutputDTO();
+
         const registerOutput = new RegisterOutputDTO();
-        registerOutput.user = user;
-        registerOutput.customer = customer;
-        console.log('Depois de criar o cliente',registerOutput);
+        userOutPutDTO.email = user.email;
+        registerOutput.user = userOutPutDTO;
+        customerOutputDTO.name = customer.name;
+        customerOutputDTO.birthday = customer.birthday;
+        registerOutput.customer = customerOutputDTO;
+
         return res.status(201).json(registerOutput);
     }
 

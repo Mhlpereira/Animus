@@ -13,13 +13,13 @@ export class CustomerService{
 
 
     async createCustomer(@requestBody() data: CustomerCreateDTO): Promise<{customer: CustomerModel}>{
-        console.log("Entrou no createCustomer")
+
         const {customer} = await this.customerModel.createCustomer({
             name: data.name,
             birthday: data.birthday,
             userId: data.userId,
         });
-        console.log('dentro do customer service',customer);
+
         return {customer};
     }
 }
