@@ -21,45 +21,52 @@ export class AuthController {
     ) { }
 
     @httpGet('/')
-    async teste(){
+    async teste() {
         return "Hello World"
     }
 
     @httpPost('/')
     async register(@requestBody() body: RegisterDTO, @response() res: Response) {
-        if (body.password !== body.confirmPassword) {
-            res.status(400).json({ message: "Passwords do not match" });
-            return;
+        try {
+            if (body.password !== body.confirmPassword) {
+                res.status(400).json({ message: "Passwords do not match" });
+                return;
+            }
+
+            const userCreateDto: UserCreateDTO = {
+                email: body.email,
+                password: body.password
+            }
+
+            const { user } = await this.userService.createUser(userCreateDto);
+
+            const userOutPutDTO = new UserOutputDTO();
+
+
+            const customerCreateDTO: CustomerCreateDTO = {
+                name: body.name,
+                birthday: body.birthday,
+                userId: user.id
+            }
+
+            const { customer } = await this.customerService.createCustomer(customerCreateDTO);
+
+            const customerOutputDTO = new CustomerOutputDTO();
+
+            const registerOutput = new RegisterOutputDTO();
+            userOutPutDTO.email = user.email;
+            registerOutput.user = userOutPutDTO;
+            customerOutputDTO.name = customer.name;
+            customerOutputDTO.birthday = customer.birthday;
+            registerOutput.customer = customerOutputDTO;
+
+            return res.status(201).json(registerOutput);
+        } catch (e) {
+            console.error("Error creating user:", e);
+            return res.status(500).json({
+                message: 'Error creating user'
+            });
         }
-
-        const userCreateDto: UserCreateDTO = {
-            email: body.email,
-            password: body.password
-        }
-
-        const { user } = await this.userService.createUser(userCreateDto);
-
-        const userOutPutDTO = new UserOutputDTO();
-        
-
-        const customerCreateDTO: CustomerCreateDTO = {
-            name: body.name,
-            birthday: body.birthday,
-            userId: user.id
-        }
-
-        const { customer } = await this.customerService.createCustomer(customerCreateDTO);
-
-        const customerOutputDTO = new CustomerOutputDTO();
-
-        const registerOutput = new RegisterOutputDTO();
-        userOutPutDTO.email = user.email;
-        registerOutput.user = userOutPutDTO;
-        customerOutputDTO.name = customer.name;
-        customerOutputDTO.birthday = customer.birthday;
-        registerOutput.customer = customerOutputDTO;
-
-        return res.status(201).json(registerOutput);
     }
 
 }

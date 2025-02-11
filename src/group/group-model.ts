@@ -1,0 +1,57 @@
+import { UserModel } from "../user/user-model";
+import { Database } from "../database";
+import { v4 as uuid } from "uuid";
+import { PoolClient } from "pg";
+
+
+
+export class GroupModel{
+    id: string;
+    name: string;
+    owner_id: string;
+    description: string;
+    users: UserModel[];
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: Date;
+
+    constructor(data: Partial<GroupModel> = {}){
+        this.fill(data);
+    }
+
+    async createGroup(data: Partial<GroupModel>, options?: {connection?: PoolClient}): Promise<{group: GroupModel}>{
+        const db = options?.connection ?? await Database.getClient();
+        const created_at = new Date();
+        const id = uuid();
+        try {
+            await db.query('BEGIN');
+            const result = await db.query(
+                'INSERT INTO groups (id, name, owner_id, description, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+                [id, data.name, data.owner_id, data.description, created_at]
+            );
+            const group = new GroupModel(result.rows[0]);
+            await db.query('COMMIT');
+            return {group};
+        }catch(e){
+            await db.query('ROLLBACK');
+            throw new Error(`Error creating group: ${e.message}`);
+        }finally{
+            if (!options?.connection) {
+                db.release();
+            }
+        }
+    }
+
+
+
+    fill(data: Partial<GroupModel>){
+        this.id = data.id;
+        this.name = data.name;
+        this.owner_id = data.owner_id;
+        this.description = data.description;
+        this.users = data.users;
+        this.created_at = data.created_at;
+        this.updated_at = data.updated_at;
+        this.deleted_at = data.deleted_at;
+    }   
+}
