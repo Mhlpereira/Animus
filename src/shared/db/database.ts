@@ -1,5 +1,7 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool } from 'pg';
 import { config } from 'dotenv';
+import { IDatabaseConnection } from '../interface/database-interface';
+import { PgPoolClient } from './PgPoolClientAdapter';
 
 config();
 
@@ -44,9 +46,10 @@ export class Database {
     return Database.instance;
   }
 
-  public static async getClient(): Promise<PoolClient> {
+  public static async getConnection(): Promise<IDatabaseConnection> {
     const pool = Database.getInstance();
-    return await pool.connect(); // Retorna um cliente específico da pool
+    const client = await pool.connect();
+    return new PgPoolClient(client); 
   }
 }
 

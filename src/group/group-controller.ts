@@ -16,9 +16,9 @@ export class GroupController {
         @request() req: Request
     ) {
         try {
-            const owner_id = req.user?.id;
+            const payloadId = req.user?.id;
 
-            if (!owner_id) {
+            if (!payloadId) {
                 return res.status(401).json({
                     message: 'Unauthorized'
                 });
@@ -26,7 +26,7 @@ export class GroupController {
 
             const createGroupDTO: CreateGroupDTO = {
                 name: body.name,
-                owner_id,
+                owner_id: payloadId,
                 description: body.description
             }
             const group = await this.groupService.createGroup(createGroupDTO);

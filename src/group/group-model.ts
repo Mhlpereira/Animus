@@ -1,7 +1,7 @@
 import { UserModel } from "../user/user-model";
-import { Database } from "../database";
+import { Database } from "../shared/db/database";
 import { v4 as uuid } from "uuid";
-import { PoolClient } from "pg";
+import { IDatabaseConnection } from "../shared/interface/database-interface";
 
 
 
@@ -19,8 +19,8 @@ export class GroupModel{
         this.fill(data);
     }
 
-    async createGroup(data: Partial<GroupModel>, options?: {connection?: PoolClient}): Promise<{group: GroupModel}>{
-        const db = options?.connection ?? await Database.getClient();
+    async createGroup(data: Partial<GroupModel>, options?: {connection?: IDatabaseConnection}): Promise<{group: GroupModel}>{
+        const db = options?.connection ?? await Database.getConnection();
         const created_at = new Date();
         const id = uuid();
         try {

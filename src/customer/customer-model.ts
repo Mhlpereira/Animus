@@ -1,8 +1,8 @@
 import { CustomerCreateDTO } from './DTO/create-customer-DTO';
-import { PoolClient } from 'pg';
 import { v4 as uuid } from 'uuid';
-import { Database } from '../database';
+import { Database } from '../shared/db/database';
 import { ICustomerModel } from './customer-interface';
+import { IDatabaseConnection } from '../shared/interface/database-interface';
 
 
 export class CustomerModel implements ICustomerModel{
@@ -18,8 +18,8 @@ export class CustomerModel implements ICustomerModel{
     }
 
     async createCustomer(data: CustomerCreateDTO,
-        options?: { connection?: PoolClient }): Promise<{ customer: CustomerModel }> {
-        const db = options?.connection ?? await Database.getClient();
+        options?: { connection?: IDatabaseConnection }): Promise<{ customer: CustomerModel }> {
+        const db = options?.connection ?? await Database.getConnection();
         const id = uuid();
         const created_at = new Date();
         try {

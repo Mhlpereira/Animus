@@ -1,8 +1,8 @@
-import { PoolClient } from "pg";
-import { Database } from "../database";
+import { Database } from "../shared/db/database";
 import { v4 as uuid } from "uuid";
 import { IUserModel } from "./user-interface";
 import { UserCreateDTO } from "./DTO/user-create-DTO";
+import { IDatabaseConnection } from "../shared/interface/database-interface";
 
 export class UserModel implements IUserModel {
     id: string;
@@ -16,15 +16,15 @@ export class UserModel implements IUserModel {
 
     async createUser(
         data: UserCreateDTO,
-        options?: { connection?: PoolClient }
-    ): Promise<{user:UserModel}> {
+        options?: { connection?: IDatabaseConnection }
+    ): Promise<{ user: UserModel }> {
 
         if (!data.email || !data.password) {
             throw new Error("Email or password is missing!");
         }
 
         console.log(data);
-        const db = options?.connection ?? await Database.getClient();
+        const db = options?.connection ?? await Database.getConnection();
         const created_at = new Date();
         const id = uuid();
         try {
@@ -39,14 +39,14 @@ export class UserModel implements IUserModel {
 
             await db.query('COMMIT');
 
-            return {user};
+            return { user };
 
 
-        }catch(e){
+        } catch (e) {
             await db.query('ROLLBACK');
             throw new Error(`Error creating user: ${e.message}`);
         }
-        finally{
+        finally {
             if (!options?.connection) {
                 db.release();
             }
@@ -54,21 +54,33 @@ export class UserModel implements IUserModel {
     }
 
     async getUserById(id: string): Promise<UserModel | null> {
-        const db = await Database.getClient();
-        const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
-        if (result.rows.length === 0) {
-            return null;
+        const db = await Database.getConnection();
+        try {
+            const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+            if (result.rows.length === 0) {
+                return null;
+            }
+            return new UserModel(result.rows[0]);
+        } catch (e) {
+            await db.query('ROLLBACK');
+            throw new Error(`Error creating user: ${e.message}`);
         }
-        return new UserModel(result.rows[0]);
+        finally {
+            db.release();
+        }
     }
 
     async getUserByEmail(email: string): Promise<UserModel | null> {
-        const db = await Database.getClient();
-        const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-        if (result.rows.length === 0) {
-            return null;
+        const db = await Database.getConnection();
+        try {
+            const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+            if (result.rows.length === 0) {
+                return null;
+            }
+            return new UserModel(result.rows[0]);
+        } finally {
+            db.release();
         }
-        return new UserModel(result.rows[0]);
     }
 
     fill(data: Partial<UserModel>): void {

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import express from 'express';
 import { AuthMiddleware } from './middleware/auth-middleware';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import { container } from './container';
+import { container } from './shared/container/container';
 import './auth/auth-controller';
 
 
