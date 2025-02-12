@@ -85,8 +85,8 @@ export class UserModel implements IUserModel {
 
     fill(data: Partial<UserModel>): void {
         if (data.id !== undefined) this.id = data.id;
-        if (data.email !== undefined) this.email = data.email;
-        if (data.password !== undefined) this.password = data.password;
+        this.email = data.email;
+        this.password = data.password;
         if (data.created_at !== undefined) this.created_at = data.created_at;
     }
 }

@@ -9,4 +9,6 @@ export class GroupService{
     async createGroup(data:{ name: string, owner_id: string, description?: string }){
         return this.groupModel.createGroup(data);
     }
+
+    
 }

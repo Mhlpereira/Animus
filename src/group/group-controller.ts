@@ -29,13 +29,14 @@ export class GroupController {
                 owner_id: payloadId,
                 description: body.description
             }
-            const group = await this.groupService.createGroup(createGroupDTO);
+            const {group} = await this.groupService.createGroup(createGroupDTO);
 
+            const GroupOutputDTO = {
+                name: group.name
+            }
 
-            res.status(200).json({
-                message: 'Group created successfully',
-                group
-            });
+            return res.status(201).json(GroupOutputDTO)
+
         } catch(e) {
             console.error("Error creating group:", e);
             return res.status(500).json({
