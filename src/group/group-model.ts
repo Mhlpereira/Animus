@@ -49,14 +49,14 @@ export class GroupModel {
         try {
             const result = await db.query("SELECT owner_id FROM groups WHERE id = $1", [group_id]);
             return result.rows.length ? result.rows[0].owner_id : null;
-        }catch (e) {
+        } catch (e) {
             throw new Error(`Error creating group: ${e.message}`);
         } finally {
             if (!options?.connection) {
                 db.release();
             }
+        }
     }
-
 
 
 

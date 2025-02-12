@@ -18,10 +18,14 @@ module.exports = {
     overrides: [
       {
         files: ["**/*.ts"],
+        env:{
+          "jest" : true
+        },
         plugins: ["@typescript-eslint"],
         parser: "@typescript-eslint/parser", 
         extends: [
-          "plugin:@typescript-eslint/recommended", 
+          "plugin:@typescript-eslint/recommended",
+          "plugin:jest/recommended" 
         ],
         rules: {
           "@typescript-eslint/no-unused-vars": "warn", 
