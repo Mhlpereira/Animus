@@ -1,0 +1,14 @@
+###
+POST http://localhost:3000/
+Content-Type: application/json
+
+{
+  "email": "ma23rio@mario.com",
+  "password": "secret",
+  "confirmPassword": "secret",
+  "name": "Mario",
+  "birthday": "1985-01-01"
+}
+
+###
+GET http://localhost:3000/
