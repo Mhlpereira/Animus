@@ -3,6 +3,7 @@ import { IGroupService } from "./group-interface";
 import { CreateGroupDTO } from "./DTO/create-group-DTO";
 import { Response, Request } from "express";
 
+
 @controller('/group')
 export class GroupController {
 
@@ -26,10 +27,10 @@ export class GroupController {
 
             const createGroupDTO: CreateGroupDTO = {
                 name: body.name,
-                owner_id: payloadId,
+                userId: payloadId,
                 description: body.description
             }
-            const {group} = await this.groupService.createGroup(createGroupDTO);
+            const { group } = await this.groupService.createGroup(createGroupDTO);
 
             const GroupOutputDTO = {
                 name: group.name
@@ -37,11 +38,12 @@ export class GroupController {
 
             return res.status(201).json(GroupOutputDTO)
 
-        } catch(e) {
+        } catch (e) {
             console.error("Error creating group:", e);
             return res.status(500).json({
                 message: 'Error creating group'
             });
         }
     }
+
 }

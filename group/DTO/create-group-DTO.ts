@@ -2,6 +2,6 @@
 
 export class CreateGroupDTO{
     name: string;
-    owner_id: string;
+    userId: string;
     description?: string;
 }
