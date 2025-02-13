@@ -2,6 +2,7 @@ import { UserModel } from "../user/user-model";
 import { Database } from "../shared/db/database";
 import { v4 as uuid } from "uuid";
 import { IDatabaseConnection } from "../shared/interface/database-interface";
+import { CreateLevelGroup } from "./DTO/create-level-group-DTO";
 
 
 
@@ -58,6 +59,28 @@ export class GroupModel {
         }
     }
 
+
+    //fazer classe para pegar o id do payload no service  e add no dto
+    //pegar o id e adicionar na criação no service
+    //adicionar verificação de permissão para criar no service
+    // 
+    async createGroupLevel(createGroupLevelDTO: CreateLevelGroupDTO, options?: { connection?: IDatabaseConnection }): void{
+        const db = options?.connection ?? await Database.getConnection();
+        const id = uuid();
+        try {
+            const result = await db.query(
+                'INSERT INTO group_level (id,  user_id, name, description) VALUES ($1, $2, $3, $4) RETURNING *',
+                [id, user_id, createGroupLevel.name,  createGroupLevel.permission,]
+            );
+        } catch (e) {
+            throw new Error(`Error creating group: ${e.message}`);
+        } finally {
+            if (!options?.connection) {
+                db.release();
+            }
+        }
+
+    }
 
 
     fill(data: Partial<GroupModel>) {
