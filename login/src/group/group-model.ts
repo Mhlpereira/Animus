@@ -1,5 +1,5 @@
 import { UserModel } from "../user/user-model";
-import { Database } from "../shared/db/database";
+import { Database } from "../shared/db/databasePool";
 import { v4 as uuid } from "uuid";
 import { IDatabaseConnection } from "../shared/interface/database-connection-interface";
 import { injectable } from "inversify";

@@ -18,20 +18,29 @@ export class UserModel {
         if (data.created_at !== undefined) this._created_at = data.created_at ?? this._created_at;
     }
 
-    get id(): String{
+    get id(): string{
         return this._id;
     }
 
-    get email(): String{
+    get email(): string{
         return this._email;
     }
 
-    get password(): String{
+    get password(): string{
         return this._password;
     }
 
 
     get created_at(): Date {
         return this._created_at;
+    }
+
+    set email(value: string){
+        this._email = value;
+        
+    }
+
+    set password(value: string){
+        this._password = value;
     }
 }

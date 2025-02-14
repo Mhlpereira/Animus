@@ -76,4 +76,17 @@ export class UserRepository{
                 db.release();
             }
         }
+
+    async changePassword(id: string, password: string): Promise<boolean>{
+        const db = await this.pg.getConnection();
+        try{
+            const result = await db.query(`UPDATE users SET password=$1  where id=$2`,
+                [password, id]
+            )
+            return result.rows > 0;
+        }catch(e){
+            throw new Error(`Error updating password: ${e.message}`);
+        }finally {
+            db.release();
+    }
 }

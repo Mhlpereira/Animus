@@ -2,17 +2,14 @@ import { Container } from 'inversify';
 import { ICustomerModel, ICustomerService } from '../../customer/customer-interface';
 import { CustomerModel } from '../../customer/customer-model';
 import { CustomerService } from '../../customer/customer-service';
-import { IGroupModel, IGroupService } from '../../group/group-interface';
-import { GroupModel } from '../../group/group-model';
-import { GroupService } from '../../group/group-service';
 import { AuthMiddleware } from '../../middleware/auth-middleware';
 import { IUserModel, IUserService } from '../../user/user-interface';
 import { UserModel } from '../../user/user-model';
 import { UserService } from '../../user/user-service';
-import { PgPoolClient } from '../db/PgPoolClientAdapter';
+import { PgPoolClient } from '../db/PgPoolClient.ts';
 import { IDatabaseConnection } from '../interface/database-connection-interface';
 import { IDatabase } from '../interface/database-interface';
-import { Database } from '../db/database';
+import { Database } from '../db/databasePool';
 
 const container = new Container();
 
@@ -27,10 +24,6 @@ container.bind<IUserService>('IUserService').to(UserService);
 //customer
 container.bind<ICustomerModel>('ICustomerModel').to(CustomerModel);
 container.bind<ICustomerService>('ICustomerService').to(CustomerService);
-
-//group
-container.bind<IGroupModel>('IGroupModel').to(GroupModel);
-container.bind<IGroupService>('IGroupService').to(GroupService);
 
 //middleware
 container.bind(AuthMiddleware).toSelf();
