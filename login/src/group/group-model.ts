@@ -1,7 +1,7 @@
 import { UserModel } from "../user/user-model";
 import { Database } from "../shared/db/database";
 import { v4 as uuid } from "uuid";
-import { IDatabaseConnection } from "../shared/interface/database-interface";
+import { IDatabaseConnection } from "../shared/interface/database-connection-interface";
 import { injectable } from "inversify";
 import { UserGroup } from "./user-group/user-group-model";
 import { LevelType } from "../shared/enums/levels";

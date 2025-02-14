@@ -2,7 +2,7 @@ import { CustomerCreateDTO } from './DTO/create-customer-DTO';
 import { v4 as uuid } from 'uuid';
 import { Database } from '../shared/db/database';
 import { ICustomerModel } from './customer-interface';
-import { IDatabaseConnection } from '../shared/interface/database-interface';
+import { IDatabaseConnection } from '../shared/interface/database-connection-interface';
 
 
 export class CustomerModel implements ICustomerModel{

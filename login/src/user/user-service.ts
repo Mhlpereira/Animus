@@ -1,4 +1,4 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable } from "inversify"
 import { IUserModel, IUserService } from "./user-interface";
 import bcrypt from "bcrypt";
 import { UserModel } from "./user-model";

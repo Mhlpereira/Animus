@@ -4,21 +4,23 @@ Software de gestão de academias e centro de treinamentos.
 
 ## O que é?
 
-Projeto desenvolvido para solucionar o problema de faltas dos alunos, permitindo a criação de aulas e a confirmação de presença pelos atletas, melhorando a gestão dos profissionais e reduzindo desencontros.
+Animus é um software de gestão para academias e centros de treinamento, projetado para otimizar a administração de aulas e a confirmação de presença dos alunos, reduzindo faltas e melhorando a organização dos profissionais.
 
 ## Arquitetura 
 
-- Arquitetura de microserviços
-- CRUD de usuário e grupos - MVC híbrido com ioc e injeção de dependência
+Construído com arquitetura de microserviços, o sistema segue os princípios do SOLID e utiliza o padrão Singleton para garantir modularidade, reutilização de código e escalabilidade. Além disso, é um software multitenant, permitindo que diferentes academias utilizem a plataforma de forma independente.
 
 ## Tech Stack
 
-- Node.js – Utilizado no backend para processamento eficiente das requisições.
-- ExpressJs – Responsável pelo gerenciamento das chamadas HTTP.
-- PostgreSQL – Banco de dados relacional para armazenar dados estruturados.
-- MongoDB – Usado para armazenar informações sobre as aulas, garantindo mais leveza e flexibilidade na gestão desses dados.
-- Cloudnary - Nuvem gratuita para dar upload em imagens e/ou vídeos curtos.
-- Jest - para testes unitários
+- NestJS & Node.js – Utilizados para criar APIs RESTful de forma eficiente e escalável, seguindo boas práticas de arquitetura.
+- Golang (Middleware) – Implementado para melhorar a performance e reduzir custos operacionais na comunicação entre serviços.
+- PostgreSQL – Escolhido como banco de dados relacional para armazenar dados estruturados com consistência e confiabilidade.
+- MongoDB – Utilizado para armazenar informações sobre aulas, garantindo mais flexibilidade e agilidade na consulta desses dados.
+- NATS – Responsável pela comunicação entre microserviços, proporcionando um sistema leve e altamente performático.
+- Cloudinary – Plataforma usada para armazenamento de imagens e vídeos curtos, garantindo uploads rápidos e gratuitos.
+- Jest – Ferramenta de testes unitários para garantir a confiabilidade e qualidade do código.
+
+
 
 ## Configs .ENV
 

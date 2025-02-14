@@ -1,11 +1,12 @@
 import { Pool } from 'pg';
 import { config } from 'dotenv';
-import { IDatabaseConnection } from '../interface/database-interface';
+import { IDatabaseConnection } from '../interface/database-connection-interface';
 import { PgPoolClient } from './PgPoolClientAdapter';
+import { IDatabase } from '../interface/database-interface';
 
 config();
 
-export class Database {
+export class Database implements IDatabase {
   private static instance: Pool;
   private constructor() { }
 
@@ -46,7 +47,7 @@ export class Database {
     return Database.instance;
   }
 
-  public static async getConnection(): Promise<IDatabaseConnection> {
+  public async getConnection(): Promise<IDatabaseConnection> {
     const pool = Database.getInstance();
     const client = await pool.connect();
     return new PgPoolClient(client); 
