@@ -3,22 +3,23 @@ import { ICustomerModel, ICustomerService } from '../../customer/customer-interf
 import { CustomerModel } from '../../customer/customer-model';
 import { CustomerService } from '../../customer/customer-service';
 import { AuthMiddleware } from '../../middleware/auth-middleware';
-import { IUserModel, IUserService } from '../../user/user-interface';
-import { UserModel } from '../../user/user-model';
+import { IUserRepository, IUserService } from '../../user/user-interface';
 import { UserService } from '../../user/user-service';
-import { PgPoolClient } from '../db/PgPoolClient.ts';
 import { IDatabaseConnection } from '../interface/database-connection-interface';
 import { IDatabase } from '../interface/database-interface';
-import { Database } from '../db/databasePool';
+import { PgDatabase } from '../db/Pgdatabase';
+import { PgPoolClient } from '../db/PgPoolClient';
+import { UserRepository } from '../../user/user-repository';
+
 
 const container = new Container();
 
 //db
 container.bind<IDatabaseConnection>('IDatabaseConnection').to(PgPoolClient);
-container.bind<IDatabase>('IDatabase').to(Database).inSingletonScope();
+container.bind<IDatabase>('IDatabase').to(PgDatabase).inSingletonScope();
 
 //user
-container.bind<IUserModel>('IUserModel').to(UserModel);
+container.bind<IUserRepository>('IUserRepository').to(UserRepository);
 container.bind<IUserService>('IUserService').to(UserService);
 
 //customer

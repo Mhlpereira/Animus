@@ -14,7 +14,7 @@ export class RegisterDTO {
 
     @MinLength(6, { message: "Password must have at least 6 characters!" })
     @Equals('password', { message: "Passwords do not match" })
-    confirmPassword: string;
+    confirmedPassword: string;
 
     @IsNotEmpty({ message: "Name is required" })
     name: string;

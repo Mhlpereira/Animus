@@ -1,8 +1,10 @@
+import { Equals } from 'class-validator';
 import { inject, injectable } from "inversify";
-import { IDatabase, IDatabaseConnection } from "../shared/interface/database-connection-interface";
+import { IDatabaseConnection } from "../shared/interface/database-connection-interface";
 import { UserCreateDTO } from "./DTO/user-create-DTO";
 import { UserModel } from "./user-model";
 import {v4 as uuid} from 'uuid';
+import { IDatabase } from "../shared/interface/database-interface";
 
 @injectable()
 export class UserRepository{
@@ -77,16 +79,31 @@ export class UserRepository{
             }
         }
 
-    async changePassword(id: string, password: string): Promise<boolean>{
+    async getUserPassword(id:string): Promise<string>{
+        const db = await this.pg.getConnection();
+
+        try{
+            const result = await db.query('SELECT password FROM users WHERE id = $1', [id])
+           if(result.rows.length === 0 ){
+            throw new Error ('User not found')
+           }
+           return result.rows[0].password;
+        } catch(e){
+            throw new Error(`Error fetching user password ${e.message}`)
+        }
+    }
+
+    async changePassword(data: {id: string, password: string}): Promise<boolean>{
         const db = await this.pg.getConnection();
         try{
             const result = await db.query(`UPDATE users SET password=$1  where id=$2`,
-                [password, id]
+                [data.password, data.id]
             )
             return result.rows > 0;
         }catch(e){
             throw new Error(`Error updating password: ${e.message}`);
         }finally {
             db.release();
-    }
+        }
+    }   
 }

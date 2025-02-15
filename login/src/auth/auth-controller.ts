@@ -28,7 +28,7 @@ export class AuthController {
     @httpPost('/')
     async register(@requestBody() body: RegisterDTO, @response() res: Response) {
         try {
-            if (body.password !== body.confirmPassword) {
+            if (body.password !== body.confirmedPassword) {
                 res.status(400).json({ message: "Passwords do not match" });
                 return;
             }
