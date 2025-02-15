@@ -1,87 +1,116 @@
-import { inject, injectable } from "inversify"
-import { IUserRepository, IUserService } from "./user-interface";
-import bcrypt from "bcrypt";
-import { UserModel } from "./user-model";
-import { UserCreateDTO } from "./DTO/user-create-DTO";
-import { ChangeUserPasswordDTO } from "./DTO/change-password-DTO";
+import { inject, injectable } from 'inversify'
+import { IUserRepository, IUserService } from './user-interface'
+import bcrypt from 'bcrypt'
+import { UserModel } from './user-model'
+import { UserCreateDTO } from './DTO/user-create-DTO'
+import { ChangeUserPasswordDTO } from './DTO/change-password-DTO'
 
 @injectable()
-export class UserService  implements IUserService{
+export class UserService implements IUserService {
+    constructor(
+        @inject('IUserRepository') private userRepository: IUserRepository,
+    ) {}
 
+    async createUser(data: UserCreateDTO): Promise<{ user: UserModel }> {
+        console.log('entrou no user service')
+        const hashedPassword = await this.hashPassword(data.password)
+        const confirmedPassword = await this.comparePassword(
+            data.password,
+            hashedPassword,
+        )
 
-    constructor(@inject('IUserRepository') private userRepository: IUserRepository) {}    
-
-    async createUser(data: UserCreateDTO): Promise<{ user: UserModel}> {
-        console.log('entrou no user service');
-        const hashedPassword = await this.hashPassword(data.password);
-        const confirmedPassword = await this.comparePassword(data.password, hashedPassword);
-
-        if(!confirmedPassword){
-            throw new Error("Encrypted password failed");
+        if (!confirmedPassword) {
+            throw new Error('Encrypted password failed')
         }
         const { user } = await this.userRepository.createUser({
             email: data.email,
             password: hashedPassword,
-        });
-        console.log("Service depois de criar", user);
-        return { user };
+        })
+        console.log('Service depois de criar', user)
+        return { user }
     }
 
-    async getUserById(id: string): Promise<UserModel | null>{
-        const user = await this.getUserById(id);
+    async getUserById(id: string): Promise<UserModel | null> {
+        const user = await this.getUserById(id)
 
-        return user;
+        return user
     }
 
-    async confirmPassword(id: string, password: string): Promise<boolean>{
-        const hashedPassword = await this.hashPassword(password);
-        const comparePassword = await this.comparePassword(password, hashedPassword);
-        if(!comparePassword){
-            throw new Error("Encrypt password failed");
+    async confirmPassword(id: string, password: string): Promise<boolean> {
+        const hashedPassword = await this.hashPassword(password)
+        const comparePassword = await this.comparePassword(
+            password,
+            hashedPassword,
+        )
+        if (!comparePassword) {
+            throw new Error('Encrypt password failed')
         }
 
-        const storedPassword = await this.userRepository.getUserPassword(id);
+        const storedPassword = await this.userRepository.getUserPassword(id)
 
-        const isPasswordCorrect = await bcrypt.compare(password, storedPassword);
+        const isPasswordCorrect = await bcrypt.compare(password, storedPassword)
 
-        return isPasswordCorrect;
-
+        return isPasswordCorrect
     }
 
-    async changePassword(data: {id: string, oldPassword: string, password:string}): Promise<boolean>{
-
-        const isConfirmed = await this.confirmPassword(data.id, data.oldPassword);
-        if(!isConfirmed){
-            throw new Error("Password is incorrect")
+    async changePassword(data: {
+        id: string
+        oldPassword: string
+        password: string
+    }): Promise<boolean> {
+        const isConfirmed = await this.confirmPassword(
+            data.id,
+            data.oldPassword,
+        )
+        if (!isConfirmed) {
+            throw new Error('Password is incorrect')
         }
 
-        const hashedPassword = await this.hashPassword(data.password);
-        const comparePassword = await this.comparePassword(data.password, hashedPassword);
-        if(!comparePassword){
-            throw new Error("Encrypt password failed");
+        const hashedPassword = await this.hashPassword(data.password)
+        const comparePassword = await this.comparePassword(
+            data.password,
+            hashedPassword,
+        )
+        if (!comparePassword) {
+            throw new Error('Encrypt password failed')
         }
 
         return await this.userRepository.changePassword({
             id: data.id,
             password: hashedPassword,
         })
-
     }
 
-    async changeEmail(data: {id: string, password: string, email: string}): Promise<boolean>{
-        const isConfirmed = await this.confirmPassword(data.id, data.password);
-        if(!isConfirmed){
-            throw new Error("Password is incorrect")
+    async changeEmail(data: {
+        id: string
+        password: string
+        email: string
+    }): Promise<boolean> {
+        const isConfirmed = await this.confirmPassword(data.id, data.password)
+        if (!isConfirmed) {
+            throw new Error('Password is incorrect')
         }
-        return await this.userRepository.changeEmail({ id: data.id, email: data.email });
+        return await this.userRepository.changeEmail({
+            id: data.id,
+            email: data.email,
+        })
+    }
+
+    async softDeleteUser(data: { id: string; password: string }): Promise<boolean> {
+        const isConfirmed = await this.confirmPassword(data.id, data.password)
+        if (!isConfirmed) {
+            throw new Error('Password is incorrect')
+        }
+        return await this.userRepository.softDeleteUser({
+            id: data.id
+        })
     }
 
     async hashPassword(password: string): Promise<string> {
-        return bcrypt.hashSync(password, 10);
+        return bcrypt.hashSync(password, 10)
     }
 
     async comparePassword(password: string, hash: string): Promise<boolean> {
-        return bcrypt.compareSync(password, hash);
+        return bcrypt.compareSync(password, hash)
     }
-
 }
