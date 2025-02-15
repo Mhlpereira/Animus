@@ -27,11 +27,17 @@ export class UserService  implements IUserService{
         return { user };
     }
 
+    async getUserById(id: string): Promise<UserModel | null>{
+        const user = await this.getUserById(id);
+
+        return user;
+    }
+
     async confirmPassword(id: string, password: string): Promise<boolean>{
         const hashedPassword = await this.hashPassword(password);
         const comparePassword = await this.comparePassword(password, hashedPassword);
         if(!comparePassword){
-            throw new Error("Encrypted password failed");
+            throw new Error("Encrypt password failed");
         }
 
         const storedPassword = await this.userRepository.getUserPassword(id);
@@ -46,20 +52,28 @@ export class UserService  implements IUserService{
 
         const isConfirmed = await this.confirmPassword(data.id, data.oldPassword);
         if(!isConfirmed){
-            throw new Error("Password is incorrect");
+            throw new Error("Password is incorrect")
         }
 
         const hashedPassword = await this.hashPassword(data.password);
         const comparePassword = await this.comparePassword(data.password, hashedPassword);
         if(!comparePassword){
-            throw new Error("Encrypted password failed");
+            throw new Error("Encrypt password failed");
         }
 
         return await this.userRepository.changePassword({
             id: data.id,
-            password: hashedPassword
+            password: hashedPassword,
         })
 
+    }
+
+    async changeEmail(data: {id: string, password: string, email: string}): Promise<boolean>{
+        const isConfirmed = await this.confirmPassword(data.id, data.password);
+        if(!isConfirmed){
+            throw new Error("Password is incorrect")
+        }
+        return await this.userRepository.changeEmail({ id: data.id, email: data.email });
     }
 
     async hashPassword(password: string): Promise<string> {

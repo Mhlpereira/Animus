@@ -12,14 +12,17 @@ export interface IUserRepository{
     createUser(data: {email: string, password: string }): Promise<{user: UserModel}>;
     getUserById(id: string): Promise<UserModel | null>;
     getUserByEmail(email: string): Promise<UserModel | null>;
-    changePassword(data: {id: string, password: string}): Promise<boolean>;
     getUserPassword(id:string): Promise<string>;
+    changePassword(data: {id: string, password: string}): Promise<boolean>;
+    changeEmail(data:{id: string, email:string}): Promise<boolean>
 }
 
 export interface IUserService{
     createUser(data: UserCreateDTO): Promise<{user: UserModel }>;
+    getUserById(id: string): Promise<UserModel | null>;
     confirmPassword(id: string, password: string): Promise<boolean>;
-    changePassword(data: {id: string, password: string}): Promise<boolean>;
+    changePassword(data: {id: string, oldPassword: string, password:string}): Promise<boolean>;
+    changeEmail(data:{id: string,password:string, email:string}): Promise<boolean>
     hashPassword(password: string): Promise<string>;
     comparePassword(password: string, hash: string): Promise<boolean>;
 }

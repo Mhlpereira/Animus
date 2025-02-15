@@ -9,14 +9,13 @@ interface AuthenticatedRequest extends Request {
 
 @injectable()
 export class AuthMiddleware {
-
+    
     constructor(@inject('IUserService') private userService: IUserService) { }
 
-
-
-    authenticate() {
+    public handler() {
         return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             console.log("Entrou no middleware");
+
             const unprotectedRoutes = [
                 { method: "GET", path: "/" },
                 { method: "POST", path: "/" },
@@ -28,7 +27,7 @@ export class AuthMiddleware {
             );
 
             if (isUnprotectedRoute) {
-                console.log("Dentro do if unprotected route")
+                console.log("Dentro do if unprotected route");
                 return next();
             }
 
@@ -38,7 +37,8 @@ export class AuthMiddleware {
                 res.status(401).json({ message: "Token not provided" });
                 return;
             }
-            console.log("entrando no try");
+
+            console.log("Entrando no try");
             try {
                 const payload = jwt.verify(token, process.env.JWT_SECRET) as {
                     id: string;
@@ -55,6 +55,6 @@ export class AuthMiddleware {
             } catch (e) {
                 res.status(401).json({ message: "Failed to authenticate token" });
             }
-        }
+        };
     }
 }
