@@ -26,6 +26,42 @@ export class CustomerModel{
     }
 
     get id(): string {
-        return this.id;
+        return this._id;
+    }
+
+    get name(): string{
+        return this._name;
+    }
+
+    get birthday(): Date{
+        return this._birthday;
+    }
+
+    get createdAt(): Date{
+        return this._created_at
+    }
+
+    get updatedAt(): Date{
+        return this._updated_at;
+    }
+
+    get user_id(): string {
+        return this._user_id;
+    }
+
+    set name(value: string){
+        this._name = value;
+    }
+
+    set nickname(value: string){
+        this._nickname = value;
+    }
+
+    set birthday(value: Date){
+        this._birthday = value;
+    }
+
+    set updatedAt(value: Date){
+        this._updated_at = value;
     }
 }
