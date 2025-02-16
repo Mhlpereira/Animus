@@ -1,4 +1,3 @@
-import { Equals } from 'class-validator'
 import { inject, injectable } from 'inversify'
 import { IDatabaseConnection } from '../shared/interface/database-connection-interface'
 import { UserCreateDTO } from './DTO/user-create-DTO'

@@ -5,7 +5,10 @@ export interface IUserData{
     id?: string;
     email?: string;
     password?: string;
+    is_active?: boolean;
     created_at?: Date;
+    update_at?: Date;
+    password_update_at?: Date;
 }
 
 export interface IUserRepository{

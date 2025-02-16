@@ -1,54 +1,31 @@
-import { CustomerCreateDTO } from './DTO/create-customer-DTO';
-import { v4 as uuid } from 'uuid';
-import { Database } from '../shared/db/databasePool';
-import { ICustomerModel } from './customer-interface';
-import { IDatabaseConnection } from '../shared/interface/database-connection-interface';
+import { ICustomerData } from './customer-interface';
 
 
-export class CustomerModel implements ICustomerModel{
-    id: string;
-    name: string;
-    birthday: Date;
-    created_at: Date;
-    updated_at?: Date;
-    user_id: string;
 
-    constructor(data: Partial<CustomerModel> = {}) {
+export class CustomerModel{
+    private _id: string;
+    private _name: string;
+    private _nickname: string;
+    private _birthday: Date;
+    private _created_at: Date;
+    private _updated_at?: Date;
+    private _user_id: string;
+
+    constructor(data: ICustomerData = {}) {
         this.fill(data);
     }
 
-    async createCustomer(data: CustomerCreateDTO,
-        options?: { connection?: IDatabaseConnection }): Promise<{ customer: CustomerModel }> {
-        const db = options?.connection ?? await Database.getConnection();
-        const id = uuid();
-        const created_at = new Date();
-        try {
-            await db.query('BEGIN');
-
-            const result = await db.query(
-                'INSERT INTO customers (id, name, birthday, created_at, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-                [id, data.name, data.birthday, created_at, data.userId]
-            );
-            const customer = new CustomerModel (result.rows[0]);
-
-            await db.query('COMMIT');
-
-            return {customer};
-        } catch (e) {
-            await db.query('ROLLBACK');
-            throw new Error(`Error creating user: ${e.message}`);
-        }
-        finally {
-            if (!options?.connection) {
-                db.release();
-            }
-        }
+    
+    fill(data: ICustomerData): void {
+        this._id = data.id;
+        this._name = data.name ;
+        this._birthday = data.birthday ;
+        this._created_at = data.created_at;
+        this._updated_at = undefined;
+        this._user_id = data.user_id;
     }
-    fill(data: Partial<CustomerModel>): void {
-        if (data.id !== undefined) this.id = data.id;
-        if (data.name !== undefined) this.name = data.name;
-        if (data.birthday !== undefined) this.birthday = data.birthday;
-        if (data.updated_at !== undefined) this.updated_at = data.updated_at;
-        if (data.created_at !== undefined) this.created_at = data.created_at;
+
+    get id(): string {
+        return this.id;
     }
 }

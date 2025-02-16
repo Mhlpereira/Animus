@@ -16,10 +16,15 @@ export class CustomerService{
 
         const {customer} = await this.customerModel.createCustomer({
             name: data.name,
+            nickname: data.nickName,
             birthday: data.birthday,
             userId: data.userId,
         });
 
         return {customer};
     }
+
+    async changeName(){}
+
+    async changeNickname
 }

@@ -11,6 +11,7 @@ CREATE TABLE "users" (
 CREATE TABLE "customers" (
   "id" UUID PRIMARY KEY ,
   "name" VARCHAR(255) NOT NULL,
+  "nickname" VARCHAR(255),
   "birthday" DATE NOT NULL,
   "created_at" TIMESTAMP NOT NULL,
   "updated_at" TIMESTAMP,
