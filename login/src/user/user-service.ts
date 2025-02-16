@@ -30,10 +30,10 @@ export class UserService implements IUserService {
         return { user }
     }
 
-    async getUserById(id: string): Promise<UserModel | null> {
-        const user = await this.getUserById(id)
+    async getUserId(id: string): Promise<string | null> {
+        const userId = await this.getUserId(id)
 
-        return user
+        return userId
     }
 
     async confirmPassword(id: string, password: string): Promise<boolean> {

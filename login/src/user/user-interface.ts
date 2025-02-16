@@ -13,7 +13,7 @@ export interface IUserData{
 
 export interface IUserRepository{
     createUser(data: {email: string, password: string }): Promise<{user: UserModel}>;
-    getUserById(id: string): Promise<UserModel | null>;
+    getUserId(id: string): Promise<string | null>;
     getUserByEmail(email: string): Promise<UserModel | null>;
     getUserPassword(id:string): Promise<string>;
     changePassword(data: {id: string, password: string}): Promise<boolean>;
@@ -24,7 +24,7 @@ export interface IUserRepository{
 
 export interface IUserService{
     createUser(data: UserCreateDTO): Promise<{user: UserModel }>;
-    getUserById(id: string): Promise<UserModel | null>;
+    getUserId(id: string): Promise<string | null>;
     confirmPassword(id: string, password: string): Promise<boolean>;
     changePassword(data: {id: string, oldPassword: string, password:string}): Promise<boolean>;
     changeEmail(data:{id: string,password:string, email:string}): Promise<boolean>;

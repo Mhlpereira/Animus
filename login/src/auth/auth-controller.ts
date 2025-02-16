@@ -46,6 +46,7 @@ export class AuthController {
             const customerCreateDTO: CustomerCreateDTO = {
                 name: body.name,
                 birthday: body.birthday,
+                nickname: body.nickname,
                 userId: user.id
             }
 

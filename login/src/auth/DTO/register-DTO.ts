@@ -23,6 +23,8 @@ export class RegisterDTO {
     @IsNotEmpty({ message: "Name is required" })
     name: string;
 
+    nickname: string;
+
     @IsNotEmpty({ message: "Birthday is required" })
     birthday: Date;
 }

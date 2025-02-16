@@ -44,16 +44,16 @@ export class UserRepository {
         }
     }
 
-    async getUserById(id: string): Promise<UserModel | null> {
+    async getUserId(id: string): Promise<string | null> {
         const db = await this.pg.getConnection()
         try {
-            const result = await db.query('SELECT * FROM users WHERE id = $1 and is_active = true', [
+            const userId = await db.query('SELECT id FROM users WHERE id = $1 and is_active = true', [
                 id,
             ])
-            if (result.rows.length === 0) {
+            if (!userId) {
                 return null
             }
-            return new UserModel(result.rows[0])
+            return userId
         } catch (e) {
             await db.query('ROLLBACK')
             throw new Error(`Error creating user: ${e.message}`)

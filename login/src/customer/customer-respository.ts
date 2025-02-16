@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid'
 export class CustomerRepository {
     constructor(@inject('IDatabase') private pg: IDatabase) {}
 
-    async createUser(
+    async createCustomer(
             data: CustomerCreateDTO,
             options?: { connection?: IDatabaseConnection },
         ): Promise<{ customer: CustomerModel }> {
@@ -20,8 +20,8 @@ export class CustomerRepository {
             await db.query('BEGIN')
 
             const result = await db.query(
-                'INSERT INTO customers (id, name, birthday, created_at, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-                [id, data.name, data.birthday, created_at, data.userId],
+                'INSERT INTO customers (id, name, nickname, birthday, created_at, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING name, nickname',
+                [id, data.name,data.nickname, data.birthday, created_at, data.userId],
             )
             const customer = new CustomerModel(result.rows[0])
 
@@ -37,4 +37,24 @@ export class CustomerRepository {
             }
         }
     }
+
+    async getCustomerId(userId: String): Promise<string  | null>{
+        const db =await this.pg.getConnection();    
+
+        try{
+            const customerId = db.query('SELECT id FROM customers WHERE user_id = $1', [userId]);
+            
+            if(!customerId){
+                return null;
+            }
+            console.log(customerId); //verificar a saída
+            return customerId;
+        }catch(e){
+            throw new Error(`Error finding user`);
+        } finally {
+            db.release();
+        }
+
+    }
+
 }
