@@ -11,10 +11,14 @@ export interface ICustomerData{
 }
 
 export interface ICustomerRepository{
-    createCustomer(data :{name: string, nickname?: string, birthday: Date, userId: string}): Promise<{customer: CustomerModel}>,
+    createCustomer(data :{name: string, nickname?: string, birthday: Date, userId: string}): Promise<{customer: CustomerModel}>
     getCustomerId(userId: string): Promise<string>
+    changeName(data:{id: string, name:string}): Promise<boolean>
+    changeNickname(data:{id:string, nickname:string}): Promise<boolean>
 }
 
 export interface ICustomerService{
     createCustomer(data: {name: string, nickname?: string,  birthday: Date, userId: string}): Promise<{customer: CustomerModel}>
+    changeName(data:{id: string, name:string}): Promise<boolean>
+    changeNickname(data:{id:string, nickname:string}): Promise<boolean>
 }

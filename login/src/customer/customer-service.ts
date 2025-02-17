@@ -1,13 +1,13 @@
 import { inject, injectable } from "inversify";
 import { CustomerCreateDTO } from "./DTO/create-customer-DTO";
-import { ICustomerRepository } from "./customer-interface";
+import { ICustomerRepository, ICustomerService } from "./customer-interface";
 import { requestBody } from "inversify-express-utils";
 import { CustomerModel } from "./customer-model";
 import { IUserService } from "../user/user-interface";
 
 
 @injectable()
-export class CustomerService{
+export class CustomerService implements ICustomerService{
 
 
     constructor(@inject('ICustomerRepository') private customerRepository: ICustomerRepository,
@@ -33,16 +33,32 @@ export class CustomerService{
             throw new Error ('Id not found')
         }
 
-        const customerId =  this.customerRepository.getCustomerbyId(userId);
+        const customerId =  await this.customerRepository.getCustomerId(userId);
         if(!customerId){
             throw new Error ('Customer not found')
         }
 
-        const result = this.customerRepository.changeName(data.id, data.name);
+        const result = this.customerRepository.changeName({ id: customerId, name: data.name });
 
         return result
 
     }
 
-    async changeNickname(){}
+    async changeNickname(@requestBody() data: {id: string, nickname: string}): Promise<boolean>{
+
+        const userId = await this.userService.getUserId(data.id);
+        if(!userId){
+            throw new Error ('Id not found')
+        }
+
+        const customerId =  await this.customerRepository.getCustomerId(userId);
+        if(!customerId){
+            throw new Error ('Customer not found')
+        }
+
+        const result = this.customerRepository.changeNickname({ id: customerId, nickname: data.nickname });
+
+        return result
+
+    }
 }
