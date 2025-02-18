@@ -5,7 +5,7 @@ CREATE TABLE "users" (
   "is_active" BOOLEAN NOT NULL,
   "created_at" TIMESTAMP NOT NULL,
   "updated_at" TIMESTAMP,
-  "password_update_at" TIMESTAMP,
+  "password_update_at" TIMESTAMP
 );
 
 CREATE TABLE "customers" (
