@@ -25,20 +25,23 @@ Construído com arquitetura de microserviços, o sistema segue os princípios do
 ## Configs .ENV
 
 - Configure seu .Env com essas var
-    POSTGRES_HOST
+POSTGRES_HOST
+POSTGRES_USER
+POSTGRES_PASSWORD
+POSTGRES_DB
+POSTGRES_PORT
+POSTGRES_SSL
 
-    POSTGRES_PORT
 
-    POSTGRES_USER
+JWT_SECRET
 
-    POSTGRES_PASSWORD
-
-    POSTGRES_DB
-
-    JWT_SECRET
-
-- execute para gerar um secret para seu jwt
+- execute para gerar um secret para seu jwt no windows
 ```
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+node -e 'console.log(require('crypto').randomBytes(32).toString('hex'))'
 ```
-    
+
+- no linux com openssl
+
+```
+openssl rand -hex 32
+```
