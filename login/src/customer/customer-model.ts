@@ -12,11 +12,6 @@ export class CustomerModel{
     private _user_id: string;
 
     constructor(data: ICustomerData = {}) {
-        this.fill(data);
-    }
-
-    
-    fill(data: ICustomerData): void {
         this._id = data.id;
         this._name = data.name ;
         this._birthday = data.birthday ;

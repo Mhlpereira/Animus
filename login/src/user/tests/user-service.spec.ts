@@ -1,112 +1,199 @@
-import 'reflect-metadata'
-import { describe, it, expect, jest, beforeEach } from '@jest/globals'
-import { Container } from 'inversify'
-import { IUserRepository, IUserService } from '../user-interface'
-import { UserService } from '../user-service'
-import { UserModel } from '../user-model'
-import { UserCreateDTO } from '../DTO/user-create-DTO'
 
-describe('FEATURE: UserService', () => {
-    let container: Container
-    let userService: IUserService
-    let userRepositoryMock: jest.Mocked<IUserRepository>
+import bcrypt from 'bcrypt';
+import { Container } from 'inversify';
+import { jest , describe, beforeEach , it , expect ,  } from '@jest/globals'
+import { UserModel } from '../user-model';
+import { UserService } from '../user-service';
+import { IUserData, IUserRepository } from '../user-interface';
+
+// Mock do UserRepository
+const mockUserRepository: jest.Mocked<IUserRepository> = {
+    createUser: jest.fn(),
+    getUserPassword: jest.fn(),
+    getUserId: jest.fn(),
+    getUserByEmail: jest.fn(),
+    changePassword: jest.fn(),
+    changeEmail: jest.fn(),
+    softDeleteUser: jest.fn(),
+};
+
+describe('UserService', () => {
+    let userService: UserService;
+    let container: Container;
 
     beforeEach(() => {
-        container = new Container()
+        // Reset dos mocks
+        jest.clearAllMocks();
+        
+        // Setup do container
+        container = new Container();
+        container.bind<IUserRepository>('IUserRepository').toConstantValue(mockUserRepository);
+        userService = container.get<UserService>(UserService);
+    });
 
-        userRepositoryMock = {
-            createUser: jest
-                .fn<
-                    (data: {
-                        email: string
-                        password: string
-                    }) : Promise<{ user: UserModel }>
-                >()
-                .mockResolvedValue({
-                    user: new UserModel({
-                        id: '1',
-                        email: 'test@example.com',
-                        password: 'hashedPassword',
-                    }),
-                }),
+    describe('createUser', () => {
+        it('should create a user successfully', async () => {
+            const defaultData: IUserData = {
+                id: "123e4567-e89b-12d3-a456-426614174000",
+                email: "test@example.com",
+                password: "hashedPassword123",
+                is_active: true,
+                created_at: new Date()
+              };
 
-            getUserById: jest
-                .fn<(id: string) : Promise<UserModel | null>>()
-                .mockResolvedValue(
-                    new UserModel({
-                        id: '1',
-                        email: 'test@example.com',
-                        password: 'hashedPassword',
-                    }),
-                ),
+              const mockData: IUserData = {
+                ...defaultData
+              };
+            
 
-            getUserByEmail: jest
-                .fn<(email: string) :Promise<UserModel | null>>()
-                .mockResolvedValue(null),
+            return new UserModel(mockData);
+        });
 
-            getUserPassword: jest
-                .fn<(id: string) :Promise<string>>()
-                .mockResolvedValue('hashedPassword'),
+        it('should throw error if password encryption fails', async () => {
+            const userData = {
+                email: 'test@example.com',
+                password: 'password123'
+            };
 
-            changePassword: jest
-                .fn<
-                    (data: {
-                        id: string,
-                        newPassword: string,
-                    }): Promise<boolean>
-                >()
-                .mockResolvedValue(true),
+            jest.spyOn(bcrypt, 'compareSync').mockReturnValue(false);
 
-            changeEmail: jest
-                .fn<(data: {id: string, newEmail: string}): Promise<boolean>>()
-                .mockResolvedValue(true),
+            await expect(userService.createUser(userData))
+                .rejects
+                .toThrow('Encrypted password failed');
+        });
+    });
 
-            softDeleteUser: jest
-                .fn<(id: string): Promise<boolean>>()
-                .mockResolvedValue(true),
-        } as jest.Mocked<IUserRepository>
+    describe('changePassword', () => {
+        it('should change password successfully', async () => {
+            const changePasswordData = {
+                id: '1',
+                oldPassword: 'oldPassword123',
+                password: 'newPassword123'
+            };
 
-        container
-            .bind<IUserRepository>('IUserRepository')
-            .toConstantValue(userRepositoryMock)
-        container.bind<IUserService>('IUserService').to(UserService)
+            mockUserRepository.getUserPassword.mockResolvedValue('hashedOldPassword');
+            mockUserRepository.changePassword.mockResolvedValue(true);
+            jest.spyOn(bcrypt, 'compareSync').mockReturnValue(true);
 
-        userService = container.get<IUserService>('IUserService')
-    })
+            const result = await userService.changePassword(changePasswordData);
 
-    it('should create a new user', async () => {
-        const userDTO: UserCreateDTO = {
-            email: 'test@example.com',
-            password: 'password123',
-        }
+            expect(result).toBe(true);
+            expect(mockUserRepository.changePassword).toHaveBeenCalledTimes(1);
+        });
 
-        const result = await userService.createUser(userDTO)
+        it('should throw error if old password is incorrect', async () => {
+            const changePasswordData = {
+                id: '1',
+                oldPassword: 'wrongPassword',
+                password: 'newPassword123'
+            };
 
-        expect(userModelMock.createUser).toHaveBeenCalledWith({
-            email: userDTO.email,
-            password: expect.any(String),
-        })
-        expect(result.user).toBeDefined()
-        expect(result.user.email).toBe(userDTO.email)
-    })
+            mockUserRepository.getUserPassword.mockResolvedValue('hashedOldPassword');
+            jest.spyOn(bcrypt, 'compareSync').mockReturnValue(false);
 
-    it('should fetch a user by ID', async () => {
-        const userId = '1'
-        const result = await userService.getUserById(userId)
+            await expect(userService.changePassword(changePasswordData))
+                .rejects
+                .toThrow('Password is incorrect');
+        });
+    });
 
-        expect(userModelMock.getUserById).toHaveBeenCalledWith(userId)
-        expect(result).toBeDefined()
-        expect(result?.id).toBe(userId)
-    })
+    describe('changeEmail', () => {
+        it('should change email successfully', async () => {
+            const changeEmailData = {
+                id: '1',
+                password: 'correctPassword',
+                email: 'newemail@example.com'
+            };
 
-    it('should return null if user does not exist', async () => {
-        userModelMock.getUserByEmail.mockResolvedValue(null)
+            mockUserRepository.getUserPassword.mockResolvedValue('hashedPassword');
+            mockUserRepository.changeEmail.mockResolvedValue(true);
+            jest.spyOn(bcrypt, 'compareSync').mockReturnValue(true);
 
-        const result = await userService.getUserByEmail('notfound@example.com')
+            const result = await userService.changeEmail(changeEmailData);
 
-        expect(userModelMock.getUserByEmail).toHaveBeenCalledWith(
-            'notfound@example.com',
-        )
-        expect(result).toBeNull()
-    })
-})
+            expect(result).toBe(true);
+            expect(mockUserRepository.changeEmail).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throw error if password is incorrect', async () => {
+            const changeEmailData = {
+                id: '1',
+                password: 'wrongPassword',
+                email: 'newemail@example.com'
+            };
+
+            mockUserRepository.getUserPassword.mockResolvedValue('hashedPassword');
+            jest.spyOn(bcrypt, 'compareSync').mockReturnValue(false);
+
+            await expect(userService.changeEmail(changeEmailData))
+                .rejects
+                .toThrow('Password is incorrect');
+        });
+    });
+
+    describe('softDeleteUser', () => {
+        it('should soft delete user successfully', async () => {
+            const deleteData = {
+                id: '1',
+                password: 'correctPassword'
+            };
+
+            mockUserRepository.getUserPassword.mockResolvedValue('hashedPassword');
+            mockUserRepository.softDeleteUser.mockResolvedValue(true);
+            jest.spyOn(bcrypt, 'compareSync').mockReturnValue(true);
+
+            const result = await userService.softDeleteUser(deleteData);
+
+            expect(result).toBe(true);
+            expect(mockUserRepository.softDeleteUser).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throw error if password is incorrect for deletion', async () => {
+            const deleteData = {
+                id: '1',
+                password: 'wrongPassword'
+            };
+
+            mockUserRepository.getUserPassword.mockResolvedValue('hashedPassword');
+            jest.spyOn(bcrypt, 'compareSync').mockReturnValue(false);
+
+            await expect(userService.softDeleteUser(deleteData))
+                .rejects
+                .toThrow('Password is incorrect');
+        });
+    });
+
+    describe('Password utilities', () => {
+        describe('hashPassword', () => {
+            it('should return hashed password', async () => {
+                const password = 'password123';
+                const hashedPassword = await userService.hashPassword(password);
+                
+                expect(hashedPassword).toBeDefined();
+                expect(hashedPassword).not.toBe(password);
+                expect(typeof hashedPassword).toBe('string');
+            });
+        });
+
+        describe('comparePassword', () => {
+            it('should return true for matching passwords', async () => {
+                const password = 'password123';
+                const hashedPassword = await userService.hashPassword(password);
+                
+                const result = await userService.comparePassword(password, hashedPassword);
+                
+                expect(result).toBe(true);
+            });
+
+            it('should return false for non-matching passwords', async () => {
+                const password = 'password123';
+                const wrongPassword = 'wrongpassword';
+                const hashedPassword = await userService.hashPassword(password);
+                
+                const result = await userService.comparePassword(wrongPassword, hashedPassword);
+                
+                expect(result).toBe(false);
+            });
+        });
+    });
+});

@@ -11,10 +11,6 @@ export class UserModel {
 
 
     constructor(data: IUserData = {}) {
-        this.fill(data);
-    }
-
-    fill(data: IUserData): void {
         this._id = data.id;
         this._email = data.email;
         this._password = data.password;
