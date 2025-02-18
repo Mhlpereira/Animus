@@ -3,7 +3,7 @@ POST http://localhost:3000/
 Content-Type: application/json
 
 {
-  "email": "ma23rio@mario.com",
+  "email": "mario@mario.com",
   "password": "secret",
   "confirmPassword": "secret",
   "name": "Mario",
@@ -12,3 +12,6 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/
+
+###
+

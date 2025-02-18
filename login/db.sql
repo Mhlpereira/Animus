@@ -9,12 +9,17 @@ CREATE TABLE "users" (
 );
 
 CREATE TABLE "customers" (
-  "id" UUID PRIMARY KEY ,
+  "user_id" UUID UNIQUE REFERENCES "users"("id"), 
   "name" VARCHAR(255) NOT NULL,
   "nickname" VARCHAR(255),
   "birthday" DATE NOT NULL,
-  "created_at" TIMESTAMP NOT NULL,
-  "updated_at" TIMESTAMP,
-  "user_id" UUID UNIQUE,
-  FOREIGN KEY("user_id") REFERENCES "users"("id") ON UPDATE CASCADE ON DELETE CASCADE
+  PRIMARY KEY (user_id)
+);
+
+CREATE TABLE refresh_tokens (
+    "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    "token" VARCHAR(500) NOT NULL,
+    "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+    "expires_at" TIMESTAMP NOT NULL,
+    PRIMARY KEY (user_id, token)
 );

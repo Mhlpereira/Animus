@@ -33,9 +33,9 @@ POSTGRES_PORT
 POSTGRES_SSL
 
 
-JWT_SECRET
+JWT_SECRET & REFRESH_SECRET
 
-- execute para gerar um secret para seu jwt no windows
+- execute para gerar um secret para seu jwt e gere outro para refresh no windows
 ```
 node -e 'console.log(require('crypto').randomBytes(32).toString('hex'))'
 ```

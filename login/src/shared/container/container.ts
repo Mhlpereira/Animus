@@ -1,6 +1,4 @@
 import { Container } from 'inversify';
-import { ICustomerRepository, ICustomerService } from '../../customer/customer-interface';
-import { CustomerService } from '../../customer/customer-service';
 import { AuthMiddleware } from '../../middleware/auth-middleware';
 import { IUserRepository, IUserService } from '../../user/user-interface';
 import { UserService } from '../../user/user-service';
@@ -9,7 +7,8 @@ import { IDatabase } from '../interface/database-interface';
 import { PgDatabase } from '../db/Pgdatabase';
 import { PgPoolClient } from '../db/PgPoolClient';
 import { UserRepository } from '../../user/user-repository';
-import { CustomerRepository } from '../../customer/customer-respository';
+import { AuthRepository } from '../../auth/auth-repository';
+import { AuthService } from '../../auth/auth-service';
 
 
 const container = new Container();
@@ -22,9 +21,9 @@ container.bind<IDatabase>('IDatabase').to(PgDatabase).inSingletonScope();
 container.bind<IUserRepository>('IUserRepository').to(UserRepository);
 container.bind<IUserService>('IUserService').to(UserService);
 
-//customer
-container.bind<ICustomerRepository>('ICustomerRepository').to(CustomerRepository);
-container.bind<ICustomerService>('ICustomerService').to(CustomerService);
+//auth
+container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);
+container.bind<IAuthService>('IAuthService').to(AuthService);
 
 //middleware
 container.bind(AuthMiddleware).toSelf();

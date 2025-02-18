@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import { UserModel } from './user-model'
 import { UserCreateDTO } from './DTO/user-create-DTO'
 import { ChangeUserPasswordDTO } from './DTO/change-password-DTO'
+import { UserLoginDTO } from './DTO/user-login-DTO'
 
 @injectable()
 export class UserService implements IUserService {
@@ -34,6 +35,22 @@ export class UserService implements IUserService {
         const userId = await this.getUserId(id)
 
         return userId
+    }
+
+    async getUserByEmail(email:string): Promise<UserLoginDTO|null>{
+        const userData = await this.userRepository.getUserByEmail(email);
+
+        if(!userData){
+            return null
+        }
+
+        if(userData.is_active === false){
+            throw new Error('User is not active');
+        }
+
+
+        const userLogin : UserLoginDTO = { id: userData.id, email: userData.email}
+        return userLogin;
     }
 
     async confirmPassword(id: string, password: string): Promise<boolean> {

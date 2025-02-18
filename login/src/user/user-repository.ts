@@ -5,6 +5,7 @@ import { UserModel } from './user-model'
 import { v4 as uuid } from 'uuid'
 import { IDatabase } from '../shared/interface/database-interface'
 
+
 @injectable()
 export class UserRepository {
     constructor(@inject('IDatabase') private pg: IDatabase) {}
@@ -62,17 +63,18 @@ export class UserRepository {
         }
     }
 
-    async getUserByEmail(email: string): Promise<UserModel | null> {
+    async getUserByEmail(email: string): Promise<any | null> {
         const db = await this.pg.getConnection()
         try {
             const result = await db.query(
-                'SELECT * FROM users WHERE email = $1',
+                'SELECT id, email, is_active FROM users WHERE email = $1',
                 [email],
             )
             if (result.rows.length === 0) {
                 return null
             }
-            return new UserModel(result.rows[0])
+    
+            return result.rows[0];
         } finally {
             db.release()
         }
