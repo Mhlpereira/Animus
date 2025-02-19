@@ -17,8 +17,8 @@ import { container } from '../shared/container/container'
 import { AuthMiddleware } from '../middleware/auth-middleware'
 import { ChangeUserEmailDTO } from './DTO/change-email-DTO'
 import { DeleteUserDTO } from './DTO/delete-user-DTO'
-import { ChangeNameDTO } from './DTO/change-name-DTO'
-import { ChangeNicknameDTO } from './DTO/change-nickname-DTO'
+import { UpdateCustomerDTO } from './DTO/update-customer'
+
 
 @controller('/user')
 export class UserController {
@@ -99,9 +99,9 @@ export class UserController {
         })
     }
 
-    @httpPut('/changeName')
-    async changeName(
-        @requestBody() body: ChangeNameDTO,
+    @httpPut('/customer/update')
+    async updateCustomer(
+        @requestBody() body: UpdateCustomerDTO,
         @response() res: Response,
         @request() req: Request,
     ) {
@@ -110,24 +110,10 @@ export class UserController {
             res.status(401).json({ message: 'Unauthorized' })
             return
         }
-        await this.userService.changeName(body)
+        await this.userService.updateCustomer(id,body)
 
         return res.status(200).json({ message: 'Name changed' })
     }
 
-    @httpPut('/changeName')
-    async changeNickname(
-        @requestBody() body: ChangeNicknameDTO,
-        @response() res: Response,
-        @request() req: Request,
-    ) {
-        const id = req.user.id
-        if (!id) {
-            res.status(401).json({ message: 'Unauthorized' })
-            return
-        }
-        await this.userService.changeNickname(body)
-
-        return res.status(200).json({ message: 'Name changed' })
-    }
+   
 }

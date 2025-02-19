@@ -1,6 +1,8 @@
 import { UserModel } from "./user-model";
 import { UserCreateDTO } from './DTO/user-create-DTO';
 import { UserLoginDTO } from "./DTO/user-login-DTO";
+import { UpdateCustomerDTO } from "./DTO/update-customer";
+
 
 export interface IUserData{
     id?: string;
@@ -12,6 +14,13 @@ export interface IUserData{
     password_update_at?: Date;
 }
 
+export interface ICustomerData{
+    user_id?: string;
+    name?: string;
+    nickname?: string;
+    birthday?: Date;
+}
+
 export interface IUserRepository{
     createUserWithCustomer(data: {email: string, password: string , name: string, nickname: string, birthday: Date}): Promise<{user: UserModel}>;
     getUserId(id: string): Promise<string | null>;
@@ -20,9 +29,7 @@ export interface IUserRepository{
     changePassword(data: {id: string, password: string}): Promise<boolean>;
     changeEmail(data:{id: string, email:string}): Promise<boolean>;
     softDeleteUser(data:{id:string}): Promise<boolean>;
-    changeName(data:{id: string, name: string}): Promise<boolean>;
-    changeNickname(data:{id: string, nickname: string}): Promise<boolean>;
-
+    updateCustomer(userId: string, data: UpdateCustomerDTO): Promise<boolean>
 }
 
 export interface IUserService{
@@ -35,6 +42,5 @@ export interface IUserService{
     softDeleteUser(data: {id: string, password: string}):Promise<boolean>
     hashPassword(password: string): Promise<string>;
     comparePassword(password: string, hash: string): Promise<boolean>;
-    changeName(data:{id: string, name: string}): Promise<boolean>;
-    changeNickname(data:{id: string, nickname: string}): Promise<boolean>;
+    updateCustomer(userId: string, UpdateCustomerDTO): Promise<boolean>
 }

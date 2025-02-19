@@ -5,6 +5,7 @@ import { UserModel } from './user-model'
 import { v4 as uuid } from 'uuid'
 import { IDatabase } from '../shared/interface/database-interface'
 import { CustomerModel } from './customer-model'
+import { UpdateCustomerDTO } from './DTO/update-customer'
 
 
 @injectable()
@@ -175,45 +176,46 @@ export class UserRepository {
         }
     }
 
-    async changeName(data: { id: string; name: string }): Promise<boolean> {
-        const db = await this.pg.getConnection()
+    async updateCustomer(userId: string, data: UpdateCustomerDTO): Promise<boolean> {
+        const db = await this.pg.getConnection();
         try {
-            await db.query('BEGIN')
-            const result = await db.query(
-                `UPDATE customer SET name=$1 where user_id=$2 VALUES ($1, $2)`,
-                [data.name, data.id],
-            )
-
-            await db.query('COMMIT')
-
-            return result.rows > 0
+            await db.query('BEGIN');
+    
+            const updates: string[] = [];
+            const values: any[] = [];
+            let index = 1;
+    
+            if (data.name !== undefined) {
+                updates.push(`name = $${index}`);
+                values.push(data.name);
+                index++;
+            }
+            if (data.nickname !== undefined) {
+                updates.push(`nickname = $${index}`);
+                values.push(data.nickname);
+                index++;
+            }
+    
+            if (updates.length === 0) {
+                throw new Error('Nenhum campo para atualizar foi fornecido.');
+            }
+    
+            values.push(userId);
+            const query = `UPDATE customers SET ${updates.join(', ')} WHERE user_id = $${index}`;
+    
+            const result = await db.query(query, values);
+    
+            await db.query('COMMIT');
+    
+            return result.rowCount > 0;
         } catch (e) {
-            await db.query('ROLLBACK')
-            throw new Error(`Error updating name: ${e.message}`)
+            await db.query('ROLLBACK');
+            throw new Error(`Erro ao atualizar customer: ${e.message}`);
         } finally {
-            db.release()
+            db.release();
         }
     }
 
-    async changeNickname(data: { id: string; nickname: string }): Promise<boolean> {
-        const db = await this.pg.getConnection()
-        try {
-            await db.query('BEGIN')
-            const result = await db.query(
-                `UPDATE customer SET nickname=$1 where user_id=$2 VALUES ($1, $2)`,
-                [data.nickname, data.id],
-            )
-
-            await db.query('COMMIT')
-
-            return result.rows > 0
-        } catch (e) {
-            await db.query('ROLLBACK')
-            throw new Error(`Error updating nickname: ${e.message}`)
-        } finally {
-            db.release()
-        }
-    }
 
 
 }

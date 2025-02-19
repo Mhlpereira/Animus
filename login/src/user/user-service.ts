@@ -5,6 +5,7 @@ import { UserModel } from './user-model'
 import { UserCreateDTO } from './DTO/user-create-DTO'
 import { ChangeUserPasswordDTO } from './DTO/change-password-DTO'
 import { UserLoginDTO } from './DTO/user-login-DTO'
+import { UpdateCustomerDTO } from './DTO/update-customer'
 
 @injectable()
 export class UserService implements IUserService {
@@ -136,29 +137,18 @@ export class UserService implements IUserService {
         return bcrypt.compareSync(password, hash)
     }
 
-    async changeName(data: {id: string, name: string}): Promise<boolean>{
+    async updateCustomer(id: string, data: UpdateCustomerDTO): Promise<boolean>{
     
-            const userId = await this.getUserId(data.id);
+            const userId = await this.getUserId(id);
             if(!userId){
                 throw new Error ('Id not found')
             }
 
-            const result = this.userRepository.changeName({ id: userId, name: data.name });
+            const result = this.userRepository.updateCustomer(userId, data);
     
             return result
     
     }
 
-    async changeNickname(data: {id: string, nickname: string}): Promise<boolean>{
-    
-        const userId = await this.getUserId(data.id);
-        if(!userId){
-            throw new Error ('Id not found')
-        }
-
-        const result = this.userRepository.changeNickname({ id: userId, nickname: data.nickname });
-
-        return result
-
-    }
+ 
 }
