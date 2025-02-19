@@ -4,6 +4,7 @@ import { UserCreateDTO } from './DTO/user-create-DTO'
 import { UserModel } from './user-model'
 import { v4 as uuid } from 'uuid'
 import { IDatabase } from '../shared/interface/database-interface'
+import { CustomerModel } from './customer-model'
 
 
 @injectable()
@@ -31,6 +32,17 @@ export class UserRepository {
             )
 
             const user = new UserModel(result.rows[0])
+
+
+            const customer = await db.query(
+                'INSERT INTO customers (user_id, name, nickname, birthday, created_at, user_id) VALUES ($1, $2, $3, $4) RETURNING name, nickname',
+                [
+                    user.id,
+                    data.name,
+                    data.nickname,
+                    data.birthday,
+                ],
+            )
 
             await db.query('COMMIT')
 
@@ -162,4 +174,46 @@ export class UserRepository {
             db.release()
         }
     }
+
+    async changeName(data: { id: string; name: string }): Promise<boolean> {
+        const db = await this.pg.getConnection()
+        try {
+            await db.query('BEGIN')
+            const result = await db.query(
+                `UPDATE customer SET name=$1 where user_id=$2 VALUES ($1, $2)`,
+                [data.name, data.id],
+            )
+
+            await db.query('COMMIT')
+
+            return result.rows > 0
+        } catch (e) {
+            await db.query('ROLLBACK')
+            throw new Error(`Error updating name: ${e.message}`)
+        } finally {
+            db.release()
+        }
+    }
+
+    async changeNickname(data: { id: string; nickname: string }): Promise<boolean> {
+        const db = await this.pg.getConnection()
+        try {
+            await db.query('BEGIN')
+            const result = await db.query(
+                `UPDATE customer SET nickname=$1 where user_id=$2 VALUES ($1, $2)`,
+                [data.nickname, data.id],
+            )
+
+            await db.query('COMMIT')
+
+            return result.rows > 0
+        } catch (e) {
+            await db.query('ROLLBACK')
+            throw new Error(`Error updating nickname: ${e.message}`)
+        } finally {
+            db.release()
+        }
+    }
+
+
 }

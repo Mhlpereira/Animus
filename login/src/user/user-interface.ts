@@ -13,18 +13,20 @@ export interface IUserData{
 }
 
 export interface IUserRepository{
-    createUser(data: {email: string, password: string }): Promise<{user: UserModel}>;
+    createUserWithCustomer(data: {email: string, password: string , name: string, nickname: string, birthday: Date}): Promise<{user: UserModel}>;
     getUserId(id: string): Promise<string | null>;
     getUserByEmail(email: string): Promise<any | null>;
     getUserPassword(id:string): Promise<string>;
     changePassword(data: {id: string, password: string}): Promise<boolean>;
     changeEmail(data:{id: string, email:string}): Promise<boolean>;
     softDeleteUser(data:{id:string}): Promise<boolean>;
-    
+    changeName(data:{id: string, name: string}): Promise<boolean>;
+    changeNickname(data:{id: string, nickname: string}): Promise<boolean>;
+
 }
 
 export interface IUserService{
-    createUser(data: UserCreateDTO): Promise<{user: UserModel }>;
+    createUserWithCustomer(data: UserCreateDTO): Promise<{user: UserModel }>;
     getUserId(id: string): Promise<string | null>;
     getUserByEmail(email: string): Promise<UserLoginDTO | null>;
     confirmPassword(id: string, password: string): Promise<boolean>;
@@ -33,4 +35,6 @@ export interface IUserService{
     softDeleteUser(data: {id: string, password: string}):Promise<boolean>
     hashPassword(password: string): Promise<string>;
     comparePassword(password: string, hash: string): Promise<boolean>;
+    changeName(data:{id: string, name: string}): Promise<boolean>;
+    changeNickname(data:{id: string, nickname: string}): Promise<boolean>;
 }

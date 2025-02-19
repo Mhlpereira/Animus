@@ -12,7 +12,8 @@ export class UserService implements IUserService {
         @inject('IUserRepository') private userRepository: IUserRepository,
     ) {}
 
-    async createUser(data: UserCreateDTO): Promise<{ user: UserModel }> {
+
+    async createUserWithCustomer(data: UserCreateDTO): Promise<{ user: UserModel }> {
         console.log('entrou no user service')
         const hashedPassword = await this.hashPassword(data.password)
         const confirmedPassword = await this.comparePassword(
@@ -23,9 +24,13 @@ export class UserService implements IUserService {
         if (!confirmedPassword) {
             throw new Error('Encrypted password failed')
         }
-        const { user } = await this.userRepository.createUser({
+        const { user } = await this.userRepository.createUserWithCustomer({
             email: data.email,
             password: hashedPassword,
+            name: data.name,
+            nickname: data.nickname,
+            birthday: data.birthday
+
         })
         console.log('Service depois de criar', user)
         return { user }
@@ -129,5 +134,31 @@ export class UserService implements IUserService {
 
     async comparePassword(password: string, hash: string): Promise<boolean> {
         return bcrypt.compareSync(password, hash)
+    }
+
+    async changeName(data: {id: string, name: string}): Promise<boolean>{
+    
+            const userId = await this.getUserId(data.id);
+            if(!userId){
+                throw new Error ('Id not found')
+            }
+
+            const result = this.userRepository.changeName({ id: userId, name: data.name });
+    
+            return result
+    
+    }
+
+    async changeNickname(data: {id: string, nickname: string}): Promise<boolean>{
+    
+        const userId = await this.getUserId(data.id);
+        if(!userId){
+            throw new Error ('Id not found')
+        }
+
+        const result = this.userRepository.changeNickname({ id: userId, nickname: data.nickname });
+
+        return result
+
     }
 }

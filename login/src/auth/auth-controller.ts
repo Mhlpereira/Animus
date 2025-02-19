@@ -1,4 +1,4 @@
-import { CustomerOutputDTO } from '../customer/DTO/output-customer-DTO'
+import { CustomerOutputDTO } from '../user/DTO/output-customer-DTO'
 import {
     controller,
     httpGet,
@@ -11,7 +11,7 @@ import { RegisterDTO } from './DTO/register-DTO'
 import { inject } from 'inversify'
 import { IUserService } from '../user/user-interface'
 import { UserCreateDTO } from '../user/DTO/user-create-DTO'
-import { CustomerCreateDTO } from '../customer/DTO/create-customer-DTO'
+import { CustomerCreateDTO } from '../user/DTO/create-customer-DTO'
 import { RegisterOutputDTO } from './DTO/register-output-DTO'
 import { Request, Response } from 'express'
 import { UserOutputDTO } from '../user/DTO/output-user-DTO'

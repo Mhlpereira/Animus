@@ -9,6 +9,7 @@ import { PgPoolClient } from '../db/PgPoolClient';
 import { UserRepository } from '../../user/user-repository';
 import { AuthRepository } from '../../auth/auth-repository';
 import { AuthService } from '../../auth/auth-service';
+import { IAuthRepository, IAuthService } from '../../auth/auth-interface';
 
 
 const container = new Container();
