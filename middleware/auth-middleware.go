@@ -16,12 +16,12 @@ var mySigningKey []byte
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("Erro ao carregar o arquivo .env, verificando variáveis de ambiente...")
+		log.Println("error loading .env file")
 	}
 
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
-		log.Fatal("Variável JWT_SECRET não definida no ambiente!")
+		log.Fatal(".env var is not found")
 	}
 
 	mySigningKey = []byte(jwtSecret)
@@ -40,7 +40,7 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 
 			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("Método de assinatura inesperado")
+					return nil, fmt.Errorf("Signing method is invalid")
 				}
 				return mySigningKey, nil
 			})
