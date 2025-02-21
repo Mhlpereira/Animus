@@ -11,7 +11,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var mySigningKey []byte("teste")
 
 func init() {
 	err := godotenv.Load()

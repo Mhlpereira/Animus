@@ -4,7 +4,6 @@ import { UserCreateDTO } from './DTO/user-create-DTO'
 import { UserModel } from './user-model'
 import { v4 as uuid } from 'uuid'
 import { IDatabase } from '../shared/interface/database-interface'
-import { CustomerModel } from './customer-model'
 import { UpdateCustomerDTO } from './DTO/update-customer'
 
 

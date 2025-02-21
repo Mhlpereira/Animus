@@ -9,3 +9,11 @@ services:
       - 5432:5432
     volumes:
       - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+
+  mongo:
+    image: mongo:8.0.3
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - 27017:27017

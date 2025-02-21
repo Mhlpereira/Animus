@@ -4,19 +4,22 @@ import { AuthMiddleware } from './middleware/auth-middleware';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import { container } from './shared/container/container';
 import './shared/routes/routes';
+import { Server } from 'socket.io';
+import http from 'http';
 
-
-const app = new InversifyExpressServer(container);
+const inversifyServer = new InversifyExpressServer(container);
+inversifyServer.setConfig((server) => {
+    server.use(express.json());
+    server.use(authMiddleware.handler());
+});
+const app = inversifyServer.build();
+const server = http.createServer(app);
+const io = new Server(server);
 const authMiddleware = container.get(AuthMiddleware);
 
-app.setConfig((server) => {
-    server.use(express.json());
-    server.use(authMiddleware.authenticate());
-});
 
-
-
-const server = app.build();
+const chatshocket = container.get<ChatSocket>(ChatSocket);
+chatshocket.initialize(io);
 
 
 server.listen(3000, () => console.log("Running on 3000"));

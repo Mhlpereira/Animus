@@ -19,6 +19,7 @@ Construído com arquitetura de microserviços, o sistema segue os princípios do
 - NATS – Responsável pela comunicação entre microserviços, proporcionando um sistema leve e altamente performático.
 - Cloudinary – Plataforma usada para armazenamento de imagens e vídeos curtos, garantindo uploads rápidos e gratuitos.
 - Jest – Ferramenta de testes unitários para garantir a confiabilidade e qualidade do código.
+- Socketio - Para ter configurar o websocket e ter uma menor latência e comunicação em tempo real.
 
 
 

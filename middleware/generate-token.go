@@ -7,11 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-	_ "github.com/lib/pq"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-var mySigningKey = []byte("teste")
 
 type TokenRequest struct {
     UserID int `json:"userId"`
@@ -33,7 +31,7 @@ func generateToken(w http.ResponseWriter, r *http.Request) {
     claims["userId"] = req.UserID
     claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 
-    tokenString, err := token.SignedString(mySigningKey)
+    tokenString, err := token.SignedString()
     if err != nil {
         http.Error(w, "Error generating token", http.StatusInternalServerError)
         return
@@ -64,7 +62,3 @@ func getDB() *sql.DB {
     return db
 }
 
-func main() {
-    http.HandleFunc("/generate-token", generateToken)
-    log.Fatal(http.ListenAndServe(":8080", nil))
-}
