@@ -40,7 +40,7 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 
 			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("Signing method is invalid")
+					return nil, fmt.Errorf("signing method is invalid")
 				}
 				return mySigningKey, nil
 			})
