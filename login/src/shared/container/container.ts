@@ -10,6 +10,9 @@ import { UserRepository } from '../../user/user-repository';
 import { AuthRepository } from '../../auth/auth-repository';
 import { AuthService } from '../../auth/auth-service';
 import { IAuthRepository, IAuthService } from '../../auth/auth-interface';
+import { IGroupRepository, IGroupService } from '../../group/group-interface';
+import { GroupRepository } from '../../group/grupo-repository';
+import { GroupService } from '../../group/group-service';
 
 
 const container = new Container();
@@ -21,6 +24,11 @@ container.bind<IDatabase>('IDatabase').to(PgDatabase).inSingletonScope();
 //user
 container.bind<IUserRepository>('IUserRepository').to(UserRepository);
 container.bind<IUserService>('IUserService').to(UserService);
+
+//group
+container.bind<IGroupRepository>('IGroupRepository').to(GroupRepository);
+container.bind<IGroupService>('IGroupService').to(GroupService);
+
 
 //auth
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);

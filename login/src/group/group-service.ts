@@ -1,3 +1,4 @@
+import { UpdateGroupDTO } from './DTO/update-group-DTO';
 import { CreateLevelGroupDTO } from './DTO/create-level-group-DTO';
 import { inject, injectable } from "inversify";
 import {  IGroupRepository } from "./group-interface";
@@ -35,6 +36,11 @@ export class GroupService{
 
         return true;
     }
+
+    async updateGroup(data: UpdateGroupDTO, userId: string): Promise<boolean>{
+
+    }
+
 
     async getOwnerId (groupId: string): Promise<string>{
         const ownerId = await this.groupRepository.getOwnerId(groupId);

@@ -10,7 +10,7 @@ export class UserGroupRepository {
     async addUser(userId: string, groupId: string, levelType: LevelType): Promise<boolean> {
         const db = await this.pg.getConnection();
 
-        const added = db.query('INSERT INTO user_group (user_id, group_id, level_type) VALUES ($1, $2, $3)', [
+        const added = await db.query('INSERT INTO user_group (user_id, group_id, level_type) VALUES ($1, $2, $3)', [
             userId,
             groupId,
             levelType,
@@ -32,43 +32,21 @@ export class UserGroupRepository {
         return removed;
     }
 
+    async getUserLevel(userId: string, groupId: string): Promise<LevelType|null>{
+        const db = await this.pg.getConnection();
 
-    private getPermissionsForLevel(levelType: LevelType): Permission[] {
-        const permissionsMapping: Record<LevelType, Permission[]> = {
-            [LevelType.OWNER]: Object.values(Permission),
-            [LevelType.ADMIN]: [
-                Permission.MANAGE_MEMBERS,
-                Permission.PROMOTE_MEMBERS,
-                Permission.DEMOTE_MEMBERS,
-                Permission.CREATE_CONTENT,
-                Permission.DELETE_CONTENT,
-                Permission.ACCEPT_MEMBERS,
-                Permission.INVITE_MEMBERS,
-                Permission.REMOVE_MEMBERS,
-                Permission.EDIT_CONTENT,
-                Permission.JOIN_CONTENT,
-            ],
-            [LevelType.INSTRUCTOR]: [
-                Permission.CREATE_CONTENT,
-                Permission.DELETE_CONTENT,
-                Permission.ACCEPT_MEMBERS,
-                Permission.INVITE_MEMBERS,
-                Permission.JOIN_CONTENT,
-            ],
-            [LevelType.MEMBER]: [Permission.JOIN_CONTENT],
-            [LevelType.GUEST]: [],
-            [LevelType.NONE]: [],
+        const result = await db.query('SELECT level_type FROM user_group WHERE user_id = $1 AND group_id = $2', [
+            userId,
+            groupId,
+        ]
+        )
+        if(result.rows.length === 0){
+            return null;
         }
-
-        const permissions = permissionsMapping[levelType]
-        if (!permissions) {
-            throw new Error('Invalid level type.')
-        }
-        return permissions
+        const levelType = result.rows[0].level_type;
+        return levelType;
     }
 
-    private updateLevel(newLevelType: LevelType): void {
-        this.levelType = newLevelType;
-    }
+  
     
 }

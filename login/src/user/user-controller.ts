@@ -112,7 +112,7 @@ export class UserController {
         }
         await this.userService.updateCustomer(id,body)
 
-        return res.status(200).json({ message: 'Name changed' })
+        return res.status(200).json({ message: 'updated!' })
     }
 
    

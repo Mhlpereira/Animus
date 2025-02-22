@@ -10,7 +10,7 @@ export class GroupRepository {
 
     async createGroup(data: {
         name: string
-        owner_id: string
+        ownerId: string
         description?: string
     }): Promise<{ group: GroupModel }> {
         const db = await this.pg.getConnection()
@@ -20,7 +20,7 @@ export class GroupRepository {
             await db.query('BEGIN')
             const result = await db.query(
                 'INSERT INTO groups (id, name, owner_id, description, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-                [id, data.name, data.owner_id, data.description, created_at],
+                [id, data.name, data.ownerId, data.description, created_at],
             )
             const group = new GroupModel(result.rows[0])
 
@@ -34,11 +34,11 @@ export class GroupRepository {
         }
     }
 
-    async deleteGroup(data: { groupId: string }): Promise<boolean> {
+    async deleteGroup(groupId: string): Promise<boolean> {
         const db = await this.pg.getConnection()
         try {
-            const result = db.query('DELETE FROM groups WHERE group_id = $1', [
-                data.groupId,
+            const result = await db.query('DELETE FROM groups WHERE group_id = $1', [
+                groupId,
             ])
 
             return !!result
@@ -47,6 +47,10 @@ export class GroupRepository {
         } finally {
             db.release();
         }
+    }
+
+    async updateGroup(data:{}){
+
     }
 
     async getOwnerId(

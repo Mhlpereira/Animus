@@ -11,7 +11,7 @@ import { UpdateCustomerDTO } from './DTO/update-customer'
 export class UserRepository {
     constructor(@inject('IDatabase') private pg: IDatabase) {}
 
-    async createUser(
+    async createUserWithCustomer(
         data: UserCreateDTO,
         options?: { connection?: IDatabaseConnection },
     ): Promise<{ user: UserModel }> {
@@ -34,7 +34,7 @@ export class UserRepository {
             const user = new UserModel(result.rows[0])
 
 
-            const customer = await db.query(
+            await db.query(
                 'INSERT INTO customers (user_id, name, nickname, birthday, created_at, user_id) VALUES ($1, $2, $3, $4) RETURNING name, nickname',
                 [
                     user.id,
