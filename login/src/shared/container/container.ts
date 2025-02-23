@@ -13,6 +13,9 @@ import { IAuthRepository, IAuthService } from '../../auth/auth-interface';
 import { IGroupRepository, IGroupService } from '../../group/group-interface';
 import { GroupRepository } from '../../group/grupo-repository';
 import { GroupService } from '../../group/group-service';
+import { IUserGroupRepository, IUserGroupService } from '../../group/user-group/user-group-interface';
+import { UserGroupRepository } from '../../group/user-group/user-group-repository';
+import { UserGroupService } from '../../group/user-group/user-group-service';
 
 
 const container = new Container();
@@ -28,6 +31,10 @@ container.bind<IUserService>('IUserService').to(UserService);
 //group
 container.bind<IGroupRepository>('IGroupRepository').to(GroupRepository);
 container.bind<IGroupService>('IGroupService').to(GroupService);
+
+//userGroup
+container.bind<IUserGroupRepository>('IUserGroupRepository').to(UserGroupRepository);
+container.bind<IUserGroupService>('IUserGroupService').to(UserGroupService);    
 
 
 //auth

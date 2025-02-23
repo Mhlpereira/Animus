@@ -4,7 +4,7 @@ import { Permission } from "../../shared/enums/permission";
 import { IUserGroupRepository } from "./user-group-interface";
 
 @injectable()
-export class UserGroupService{
+export class UserGroupService implements IUserGroupService{
 
     constructor(@inject('IUserGroupRepository') private userGroupRepository: IUserGroupRepository,
     ){}

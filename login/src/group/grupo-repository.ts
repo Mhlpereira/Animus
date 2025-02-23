@@ -3,6 +3,7 @@ import { IDatabase } from '../shared/interface/database-interface'
 import { GroupModel } from './group-model'
 import { IDatabaseConnection } from '../shared/interface/database-connection-interface'
 import { v4 as uuid } from 'uuid'
+import { UpdateGroupDTO } from './DTO/update-group-DTO'
 
 @injectable()
 export class GroupRepository {
@@ -37,27 +38,67 @@ export class GroupRepository {
     async deleteGroup(groupId: string): Promise<boolean> {
         const db = await this.pg.getConnection()
         try {
-            const result = await db.query('DELETE FROM groups WHERE group_id = $1', [
-                groupId,
-            ])
+            const result = await db.query(
+                'DELETE FROM groups WHERE group_id = $1',
+                [groupId],
+            )
 
             return !!result
         } catch (e) {
-            throw new Error(`Error deleting group: ${e.message}`);
+            throw new Error(`Error deleting group: ${e.message}`)
         } finally {
-            db.release();
+            db.release()
         }
     }
 
-    async updateGroup(data:{}){
+    async updateGroup(data: UpdateGroupDTO, groupId: string): Promise<boolean> {
+        const db = await this.pg.getConnection()
+        try {
+            await db.query('BEGIN')
 
+            const updates: string[] = []
+            const values: any[] = []
+            let index = 1
+
+            if (data.name) {
+                updates.push(`name = $${index}`)
+                values.push(data.name)
+                index++
+            }
+            if (data.description) {
+                updates.push(`description = $${index}`)
+                values.push(data.description)
+                index++
+            }
+
+            if (updates.length === 0) {
+                throw new Error('No data to update')
+            }
+
+            values.push(groupId)
+
+            const query = `
+            UPDATE groups
+            SET ${updates.join(', ')}
+            WHERE id = $${index}
+            `
+
+            await db.query(query, values)
+            await db.query('COMMIT')
+            return true
+        } catch (e) {
+            await db.query('ROLLBACK')
+            throw new Error(`Error updating group: ${e.message}`)
+        } finally {
+            db.release()
+        }
     }
 
     async getOwnerId(
         group_id: string,
         options?: { connection?: IDatabaseConnection },
     ): Promise<string | null> {
-        const db = options?.connection ?? (await this.pg.getConnection())
+        const db = await this.pg.getConnection()
         try {
             const result = await db.query(
                 'SELECT owner_id FROM groups WHERE id = $1',

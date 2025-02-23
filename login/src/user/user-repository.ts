@@ -184,32 +184,32 @@ export class UserRepository {
             const values: any[] = [];
             let index = 1;
     
-            if (data.name !== undefined) {
+            if (data.name) {
                 updates.push(`name = $${index}`);
                 values.push(data.name);
                 index++;
             }
-            if (data.nickname !== undefined) {
+            if (data.nickname) {
                 updates.push(`nickname = $${index}`);
                 values.push(data.nickname);
                 index++;
             }
     
             if (updates.length === 0) {
-                throw new Error('Nenhum campo para atualizar foi fornecido.');
+                throw new Error('No data to update');
             }
     
             values.push(userId);
             const query = `UPDATE customers SET ${updates.join(', ')} WHERE user_id = $${index}`;
     
-            const result = await db.query(query, values);
+            await db.query(query, values);
     
             await db.query('COMMIT');
     
-            return result.rowCount > 0;
+            return true
         } catch (e) {
             await db.query('ROLLBACK');
-            throw new Error(`Erro ao atualizar customer: ${e.message}`);
+            throw new Error(`Error updating customer: ${e.message}`);
         } finally {
             db.release();
         }

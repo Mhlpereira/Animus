@@ -16,4 +16,13 @@ export interface IUserGroupRepository{
     addUser(userId: string, groupId: string, levelType: LevelType): Promise<boolean>;
     removeUser(userId: string, groupId: string): Promise<boolean>;
     getUserLevel(userId: string, groupId: string): Promise<LevelType|null>;
+    updateLevel(newLevelType: LevelType, userId: string, groupId: string): Promise<boolean>;
+}
+
+export interface IUserGroupService{
+    addUser(userId: string, groupId: string, levelType: LevelType): Promise<boolean>;
+    removeUser(userId: string, groupId: string): Promise<boolean>;
+    getUserLevel(userId: string, groupId: string): Promise<LevelType|null>;
+    updateLevel(newLevelType: LevelType, userId: string, groupId: string): Promise<boolean>;
+    getPermissionsForLevel(levelType: LevelType): Permission[];
 }
