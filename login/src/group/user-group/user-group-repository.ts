@@ -2,9 +2,10 @@ import { inject, injectable } from 'inversify'
 import { IDatabase } from '../../shared/interface/database-interface'
 import { Permission } from '../../shared/enums/permission'
 import { LevelType } from '../../shared/enums/levels'
+import { IUserGroupRepository } from './user-group-interface';
 
 @injectable()
-export class UserGroupRepository {
+export class UserGroupRepository implements IUserGroupRepository{
     constructor(@inject('IDatabase') private pg: IDatabase) {}
 
     async addUser(userId: string, groupId: string, levelType: LevelType): Promise<boolean> {
@@ -47,6 +48,21 @@ export class UserGroupRepository {
         return levelType;
     }
 
-  
-    
+    async upadateLevel(newLevelType: LevelType, userId: string, groupId: string): Promise<boolean> {
+        const db = await this.pg.getConnection();
+
+        const result = await db.query('UPDATE user_group SET level_type = $1 WHERE user_id = $2 AND group_id = $3',
+            [
+                newLevelType,
+                userId,
+                groupId,
+            ]
+        );
+
+        if(result.rows.length === 0){
+            return false
+        }
+
+        return true
+    }
 }

@@ -1,12 +1,36 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { LevelType } from "../../shared/enums/levels";
 import { Permission } from "../../shared/enums/permission";
+import { IUserGroupRepository } from "./user-group-interface";
 
 @injectable()
 export class UserGroupService{
 
+    constructor(@inject('IUserGroupRepository') private userGroupRepository: IUserGroupRepository,
+    ){}
+
+    async addUser(userId: string, groupId: string, levelType: LevelType): Promise<boolean> {
+        const added = await this.userGroupRepository.addUser(userId, groupId, levelType);
+        return added;
+    }
+
+    async removeUser(userId: string, groupId: string): Promise<boolean>{
+        const removed = await this.userGroupRepository.removeUser(userId, groupId);
+        return removed;
+    }
+
+    async getUserLevel(userId: string, groupId: string): Promise<LevelType|null>{
+        const levelType = await this.userGroupRepository.getUserLevel(userId, groupId);
+        return levelType;
+    }
+
+    async updateLevel(newLevelType: LevelType, groupId: string, userId: string): Promise<boolean> {
+        await this.userGroupRepository.updateLevel(newLevelType, userId, groupId);
+        return true;
+    }
+
     
-    private getPermissionsForLevel(levelType: LevelType): Permission[] {
+    getPermissionsForLevel(levelType: LevelType): Permission[] {
         const permissionsMapping: Record<LevelType, Permission[]> = {
             [LevelType.OWNER]: Object.values(Permission),
             [LevelType.ADMIN]: [
@@ -40,7 +64,5 @@ export class UserGroupService{
         return permissions
     }
 
-    private updateLevel(newLevelType: LevelType): void {
-        this.levelType = newLevelType;
-    }
+
 }
