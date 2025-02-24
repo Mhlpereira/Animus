@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { IUserService } from "../user/user-interface";
 
 interface AuthenticatedRequest extends Request {
-    user?: { id: string; email: string };
+    user?: { id: string , email: string};
 }
 
 @injectable()
@@ -44,12 +44,12 @@ export class AuthMiddleware {
                     id: string;
                     email: string;
                 };
-                const user = await this.userService.getUserById(payload.id);
+                const user = await this.userService.getUserId(payload.id);
                 if (!user) {
                     res.status(401).json({ message: "Failed to authenticate user token" });
                     return;
                 }
-                req.user = user as { id: string; email: string };
+                req.user = { id: payload.id, email: payload.email };
                 console.log("Passou pelo middleware");
                 next();
             } catch (e) {

@@ -26,7 +26,7 @@ CREATE TABLE refresh_tokens (
 
 CREATE TABLE "groups"(
   "id" UUID PRIMARY KEY,
-  "name" VARCHAR(255) NOT NULL,
+  "name" VARCHAR(255) UNIQUE NOT NULL,
   "description" TEXT,
   "user_id" UUID NOT NULL REFERENCES "users"("id"),
   "created_at" TIMESTAMP NOT NULL,

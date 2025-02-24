@@ -1,6 +1,7 @@
 import { UpdateGroupDTO } from './DTO/update-group-DTO'
 import { inject, injectable } from 'inversify'
 import { IGroupRepository } from './group-interface'
+import { GroupModel } from './group-model'
 
 @injectable()
 export class GroupService {
@@ -56,4 +57,26 @@ export class GroupService {
 
         return ownerId
     }
+
+    async getGroupById(groupId: string): Promise<GroupModel> {
+        const group = await this.groupRepository.getGroupById(groupId)
+
+        if (!group) {
+            throw new Error('Error getting group')
+        }
+
+        return group
+    }
+
+    async getGroupByName( groupName: string): Promise<GroupModel> {
+        const group = await this.groupRepository.getGroupByName(groupName)
+
+        if (!group) {
+            throw new Error('Error getting group')
+        }
+
+        return group
+    }
+
+    
 }

@@ -7,6 +7,8 @@ export interface IGroupRepository {
     deleteGroup(groupId: string): Promise<boolean>;
     getOwnerId(groupId: string): Promise<string>;
     updateGroup(data: UpdateGroupDTO, userId: string): Promise<boolean>;
+    getGroupById(groupId: string): Promise<GroupModel>;
+    getGroupByName(groupName: string): Promise<GroupModel>;
 }
 
 export interface IGroupService{
@@ -14,4 +16,6 @@ export interface IGroupService{
     deleteGroup(groupId: string, userId: string): Promise<boolean>;
     updateGroup(data: UpdateGroupDTO, userId: string): Promise<boolean>;
     getOwnerId(groupId: string): Promise<string>;
+    getGroupById(groupId: string): Promise<GroupModel>;
+    getGroupByName(groupName: string): Promise<GroupModel>;
 }

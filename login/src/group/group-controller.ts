@@ -6,6 +6,8 @@ import {
     response,
     httpPut,
     httpDelete,
+    requestParam,
+    httpGet,
 } from 'inversify-express-utils'
 import { IGroupService } from './group-interface'
 import { CreateGroupDTO } from './DTO/create-group-DTO'
@@ -56,6 +58,7 @@ export class GroupController {
     }
 
     @httpPut('/update', container.get(AuthMiddleware).handler())
+    @PermissionRequired(Permission.MANAGE_GROUP)
     async updateGroup(
         @requestBody() body: UpdateGroupDTO,
         @response() res: Response,
@@ -97,9 +100,10 @@ export class GroupController {
     @httpPost('/addUser', container.get(AuthMiddleware).handler())
     @PermissionRequired(Permission.INVITE_MEMBERS)
     async addUser(
-        @requestBody() body: {userId: string, groupId: string, levelType: LevelType},
+        @requestBody() body: {userId: string, levelType: LevelType},
         @response() res: Response,
         @request() req: Request,
+        @requestParam('groupName') groupName: string,
     ){
         const payloadId = req.user?.id
 
@@ -109,8 +113,18 @@ export class GroupController {
             })
         }
 
-        await this.userGroupService.addUser(body.userId, body.groupId, body.levelType)
+        await this.userGroupService.addUser(body.userId, groupName, body.levelType)
 
         return res.status(200)
+    }
+
+    @httpGet('/:groupName', container.get(AuthMiddleware).handler())
+    async getGroupByName(
+        @requestParam('groupName') groupName: string,
+        @response() res: Response,
+    ){
+        const group = await this.groupService.getGroupByName(groupName)
+
+        return res.status(200).json({group})
     }
 }

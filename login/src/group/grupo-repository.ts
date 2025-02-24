@@ -113,4 +113,34 @@ export class GroupRepository {
             }
         }
     }
+
+    async getGroupById(groupId: string): Promise<GroupModel> {
+        const db = await this.pg.getConnection()
+        try {
+            const result = await db.query(
+                'SELECT * FROM groups WHERE id = $1 and is_active=true',
+                [groupId],
+            )
+            return new GroupModel(result.rows[0])
+        } catch (e) {
+            throw new Error(`Error getting group: ${e.message}`)
+        } finally {
+            db.release()
+        }
+    }
+
+    async getGroupByName(groupName: string): Promise<GroupModel> {
+        const db = await this.pg.getConnection()
+        try {
+            const result = await db.query(
+                'SELECT * FROM groups WHERE name = $1 and is_active=true',
+                [groupName],
+            )
+            return new GroupModel(result.rows[0])
+        } catch (e) {
+            throw new Error(`Error getting group: ${e.message}`)
+        } finally {
+            db.release()
+        }
+    }
 }
