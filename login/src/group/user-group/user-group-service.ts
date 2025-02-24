@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { LevelType } from "../../shared/enums/levels";
 import { Permission } from "../../shared/enums/permission";
-import { IUserGroupRepository } from "./user-group-interface";
+import { IUserGroupRepository, IUserGroupService } from "./user-group-interface";
 
 @injectable()
 export class UserGroupService implements IUserGroupService{

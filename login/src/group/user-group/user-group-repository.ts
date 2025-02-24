@@ -48,7 +48,7 @@ export class UserGroupRepository implements IUserGroupRepository{
         return levelType;
     }
 
-    async upadateLevel(newLevelType: LevelType, userId: string, groupId: string): Promise<boolean> {
+    async updateLevel(newLevelType: LevelType, userId: string, groupId: string): Promise<boolean> {
         const db = await this.pg.getConnection();
 
         const result = await db.query('UPDATE user_group SET level_type = $1 WHERE user_id = $2 AND group_id = $3',

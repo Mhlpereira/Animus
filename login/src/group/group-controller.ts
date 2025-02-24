@@ -4,6 +4,8 @@ import {
     requestBody,
     request,
     response,
+    httpPut,
+    httpDelete,
 } from 'inversify-express-utils'
 import { IGroupService } from './group-interface'
 import { CreateGroupDTO } from './DTO/create-group-DTO'
@@ -12,12 +14,17 @@ import { container } from '../shared/container/container'
 import { inject } from 'inversify'
 import { AuthMiddleware } from '../middleware/auth-middleware'
 import { UpdateGroupDTO } from './DTO/update-group-DTO'
+import { PermissionRequired } from '../shared/decorators/role-required'
+import { Permission } from '../shared/enums/permission'
+import { IUserGroupService } from './user-group/user-group-interface'
+import { LevelType } from '../shared/enums/levels'
 
 @controller('/group')
 export class GroupController {
-    constructor(@inject('IGroupService') private groupService: IGroupService) {}
+    constructor(@inject('IGroupService') private groupService: IGroupService,
+                @inject('IUserGroupService') private userGroupService: IUserGroupService) {}
 
-    @httpPost('/create')
+    @httpPost('/create', container.get(AuthMiddleware).handler())
     async createGroup(
         @requestBody() body: CreateGroupDTO,
         @response() res: Response,
@@ -62,7 +69,47 @@ export class GroupController {
             })
         }
 
-        await this.groupService.updateGroup(payloadId, body)
+        await this.groupService.updateGroup(body, payloadId)
+
+        return res.status(200)
+    }
+
+    @httpPut('/delete', container.get(AuthMiddleware).handler())
+    @PermissionRequired(Permission.MANAGE_GROUP)
+    async deleteGroup(
+        @requestBody() body : {groupId: string},
+        @response() res: Response,
+        @request() req: Request,
+    ){
+        const payloadId = req.user?.id
+
+        if (!payloadId) {
+            return res.status(401).json({
+                message: 'Token invalid, please login again',
+            })
+        }
+
+        await this.groupService.deleteGroup(body.groupId, payloadId)
+
+        return res.status(200)
+    }
+    
+    @httpPost('/addUser', container.get(AuthMiddleware).handler())
+    @PermissionRequired(Permission.INVITE_MEMBERS)
+    async addUser(
+        @requestBody() body: {userId: string, groupId: string, levelType: LevelType},
+        @response() res: Response,
+        @request() req: Request,
+    ){
+        const payloadId = req.user?.id
+
+        if (!payloadId) {
+            return res.status(401).json({
+                message: 'Token invalid, please login again',
+            })
+        }
+
+        await this.userGroupService.addUser(body.userId, body.groupId, body.levelType)
 
         return res.status(200)
     }

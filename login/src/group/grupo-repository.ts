@@ -11,7 +11,7 @@ export class GroupRepository {
 
     async createGroup(data: {
         name: string
-        ownerId: string
+        userId: string
         description?: string
     }): Promise<{ group: GroupModel }> {
         const db = await this.pg.getConnection()
@@ -21,7 +21,7 @@ export class GroupRepository {
             await db.query('BEGIN')
             const result = await db.query(
                 'INSERT INTO groups (id, name, owner_id, description, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-                [id, data.name, data.ownerId, data.description, created_at],
+                [id, data.name, data.userId, data.description, created_at],
             )
             const group = new GroupModel(result.rows[0])
 
@@ -39,7 +39,7 @@ export class GroupRepository {
         const db = await this.pg.getConnection()
         try {
             const result = await db.query(
-                'DELETE FROM groups WHERE group_id = $1',
+                'UPDATE groups SET is_active=false where id = $1',
                 [groupId],
             )
 
@@ -81,7 +81,7 @@ export class GroupRepository {
             UPDATE groups
             SET ${updates.join(', ')}
             WHERE id = $${index}
-            `
+        `
 
             await db.query(query, values)
             await db.query('COMMIT')

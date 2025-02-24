@@ -23,3 +23,19 @@ CREATE TABLE refresh_tokens (
     "expires_at" TIMESTAMP NOT NULL,
     PRIMARY KEY (user_id, token)
 );
+
+CREATE TABLE "groups"(
+  "id" UUID PRIMARY KEY,
+  "name" VARCHAR(255) NOT NULL,
+  "description" TEXT,
+  "user_id" UUID NOT NULL REFERENCES "users"("id"),
+  "created_at" TIMESTAMP NOT NULL,
+  "updated_at" TIMESTAMP,
+  "is_active" BOOLEAN NOT NULL
+)
+
+CREATE TABLE "user_group"(
+  "user_id" UUID NOT NULL REFERENCES "users"("id"),
+  "group_id" UUID NOT NULL REFERENCES "groups"("id") ON DELETE CASCADE,
+  PRIMARY KEY (user_id, group_id)
+)
