@@ -1,4 +1,3 @@
-import { CustomerOutputDTO } from '../user/DTO/output-customer-DTO'
 import {
     controller,
     httpGet,
@@ -7,23 +6,15 @@ import {
     requestBody,
     response,
 } from 'inversify-express-utils'
-import { RegisterDTO } from '../user/DTO/register-DTO'
 import { inject } from 'inversify'
 import { IUserService } from '../user/user-interface'
-import { UserCreateDTO } from '../user/DTO/user-create-DTO'
-import { CustomerCreateDTO } from '../user/DTO/create-customer-DTO'
-import { RegisterOutputDTO } from '../user/DTO/register-output-DTO'
 import { Request, Response } from 'express'
-import { UserOutputDTO } from '../user/DTO/output-user-DTO'
 import { LoginDTO } from './DTO/login-DTO'
 import { IAuthService } from './auth-interface'
 
 @controller('/')
 export class AuthController {
-    constructor(
-        @inject('IUserService') private userService: IUserService,
-        @inject('IAuthService') private authService: IAuthService,
-    ) {}
+    constructor(@inject('IAuthService') private authService: IAuthService) {}
 
     @httpGet('/')
     async teste() {
@@ -36,9 +27,33 @@ export class AuthController {
         @response() res: Response,
         @request() req: Request,
     ) {
-        try{
-            const user = await this.userService.getUserByEmail(body.email)
-            
+        try {
+            const tokens = await this.authService.login(body)
+
+            return res.status(200).json({
+                success: true,
+                data: tokens,
+            })
+        } catch (e) {
+            return res.status(400).json({ success: false, message: e.message })
+        }
+    }
+
+    @httpPost('/logout')
+    async logout(@request() req: Request, @response() res: Response) {
+        try {
+            const userId = req.user.id 
+            await this.authService.logout(userId)
+
+            return res.status(200).json({
+                success: true,
+                message: 'Logged out successfully',
+            })
+        } catch (e) {
+            return res.status(400).json({
+                success: false,
+                message: e.message,
+            })
         }
     }
 }
