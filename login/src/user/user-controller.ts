@@ -18,12 +18,40 @@ import { AuthMiddleware } from '../middleware/auth-middleware'
 import { ChangeUserEmailDTO } from './DTO/change-email-DTO'
 import { DeleteUserDTO } from './DTO/delete-user-DTO'
 import { UpdateCustomerDTO } from './DTO/update-customer'
+import { RegisterOutputDTO } from './DTO/register-output-DTO'
+import { RegisterDTO } from './DTO/register-DTO'
 
 
 @controller('/user')
 export class UserController {
     //midleware provisório
     constructor(@inject('IUserService') private userService: IUserService) {}
+
+        @httpPost('/')
+        async createUserWithCustomer(
+            @requestBody() body: RegisterDTO,
+            @response() res: Response,
+        ) {
+            try {
+                if (body.password !== body.confirmedPassword) {
+                    res.status(400).json({ message: 'Passwords do not match' })
+                    return
+                }
+    
+                const userWithCustomer = await this.userService.createUserWithCustomer(body); 
+
+                const registerOutput = new RegisterOutputDTO()
+                registerOutput.email = userWithCustomer.user.email
+    
+                return res.status(201).json(registerOutput)
+            } catch (e) {
+                console.error('Error creating user:', e)
+                return res.status(500).json({
+                    message: 'Error creating user',
+                })
+            }
+        }
+    
 
     @httpPut('/changePassword', container.get(AuthMiddleware).handler())
     async changePassword(
