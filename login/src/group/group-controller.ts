@@ -20,11 +20,15 @@ import { PermissionRequired } from '../shared/decorators/role-required'
 import { Permission } from '../shared/enums/permission'
 import { IUserGroupService } from './user-group/user-group-interface'
 import { LevelType } from '../shared/enums/levels'
+import { OutputGroupDTO } from './DTO/output-group-DTO'
 
 @controller('/group')
 export class GroupController {
-    constructor(@inject('IGroupService') private groupService: IGroupService,
-                @inject('IUserGroupService') private userGroupService: IUserGroupService) {}
+    constructor(
+        @inject('IGroupService') private groupService: IGroupService,
+        @inject('IUserGroupService')
+        private userGroupService: IUserGroupService,
+    ) {}
 
     @httpPost('/create', container.get(AuthMiddleware).handler())
     async createGroup(
@@ -47,6 +51,8 @@ export class GroupController {
                 description: body.description,
             }
             const created = await this.groupService.createGroup(createGroupDTO)
+            const groupOutput = new OutputGroupDTO()
+            groupOutput.name = created.name
 
             return res.status(201).json({ message: 'group created!' })
         } catch (e) {
@@ -80,10 +86,10 @@ export class GroupController {
     @httpPut('/delete', container.get(AuthMiddleware).handler())
     @PermissionRequired(Permission.MANAGE_GROUP)
     async deleteGroup(
-        @requestBody() body : {groupId: string},
+        @requestBody() body: { groupId: string },
         @response() res: Response,
         @request() req: Request,
-    ){
+    ) {
         const payloadId = req.user?.id
 
         if (!payloadId) {
@@ -96,15 +102,15 @@ export class GroupController {
 
         return res.status(200)
     }
-    
+
     @httpPost('/addUser', container.get(AuthMiddleware).handler())
     @PermissionRequired(Permission.INVITE_MEMBERS)
     async addUser(
-        @requestBody() body: {userId: string, levelType: LevelType},
+        @requestBody() body: { userId: string; levelType: LevelType },
         @response() res: Response,
         @request() req: Request,
         @requestParam('groupName') groupName: string,
-    ){
+    ) {
         const payloadId = req.user?.id
 
         if (!payloadId) {
@@ -113,7 +119,11 @@ export class GroupController {
             })
         }
 
-        await this.userGroupService.addUser(body.userId, groupName, body.levelType)
+        await this.userGroupService.addUser(
+            body.userId,
+            groupName,
+            body.levelType,
+        )
 
         return res.status(200)
     }
@@ -122,9 +132,9 @@ export class GroupController {
     async getGroupByName(
         @requestParam('groupName') groupName: string,
         @response() res: Response,
-    ){
+    ) {
         const group = await this.groupService.getGroupByName(groupName)
 
-        return res.status(200).json({group})
+        return res.status(200).json({ group })
     }
 }

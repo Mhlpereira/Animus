@@ -13,14 +13,14 @@ export class GroupService {
         name: string
         userId: string
         description?: string
-    }): Promise<boolean> {
+    }): Promise<GroupModel> {
         const { group } = await this.groupRepository.createGroup(data)
 
         if (!group) {
             throw new Error('Error creating group')
         }
 
-        return true
+        return group
     }
 
     async deleteGroup(groupId: string, userId: string): Promise<boolean> {

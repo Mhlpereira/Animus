@@ -8,3 +8,11 @@ export interface IDataTeam{
     instructorId?: string;
     groupId?: string;
 }
+
+export interface ITeamRepository{
+
+}
+
+export interface ITeamService{
+    
+}

@@ -12,7 +12,7 @@ export interface IGroupRepository {
 }
 
 export interface IGroupService{
-    createGroup(data:{name: string, userId: string, description?: string}): Promise<boolean>;
+    createGroup(data:{name: string, userId: string, description?: string}): Promise<GroupModel>;
     deleteGroup(groupId: string, userId: string): Promise<boolean>;
     updateGroup(data: UpdateGroupDTO, userId: string): Promise<boolean>;
     getOwnerId(groupId: string): Promise<string>;
