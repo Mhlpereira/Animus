@@ -3,9 +3,10 @@ import { IDatabase } from "../../shared/interface/database-interface";
 import {v4 as uuid} from 'uuid';
 import { TeamModel } from "./team-model";
 import { CreateTeamDTO } from "../DTO/create-team-DTO";
+import { ITeamRepository } from "./team-interface";
 
 @injectable()
-export class TeamRepository{
+export class TeamRepository implements ITeamRepository{
 
     constructor(@inject('IDatabase') private pg: IDatabase) {}
 
@@ -22,7 +23,24 @@ export class TeamRepository{
             await db.query('COMMIT');
             return team    
         }catch(e){
+            throw new e('Error creating team:', e.message);
+        }finally{
+            db.release();
+        }
+    }
 
+    async getUserByName(teamId: string, name: string): Promise<{ id: number; name: string; email: string }[]> {
+        const db = await this.pg.getConnection();
+        try {
+            const result = await db.query(`
+                SELECT id, name, email
+                FROM users
+                WHERE team_id = $1
+                AND name ILIKE $2;
+            `, [teamId, `%${name}%`]);
+            return result.rows;
+        } catch (e) {
+            throw new e('Error fetching users', e.message);
         }finally{
             db.release();
         }

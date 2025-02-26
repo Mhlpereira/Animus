@@ -1,5 +1,5 @@
 import { PoolClient } from 'pg';
-import { IDatabaseConnection } from '../interface/database-connection-interface';
+import { IDatabaseConnection } from '../../interface/database-connection-interface';
 
 export class PgPoolClient implements IDatabaseConnection {
   constructor(private client: PoolClient) {}

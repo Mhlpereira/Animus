@@ -1,5 +1,5 @@
-import { IDatabaseConnection } from "../interface/database-connection-interface";
-import { IDatabase } from "../interface/database-interface";
+import { IDatabaseConnection } from "../../interface/database-connection-interface";
+import { IDatabase } from "../../interface/database-interface";
 import { DatabasePool } from "./databasePool";
 import { PgPoolClient } from "./PgPoolClient";
 
