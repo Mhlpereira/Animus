@@ -1,4 +1,5 @@
 import { HorarioJson } from "../../types/horarioJson";
+import { UserModel } from "../../user/user-model";
 import { CreateTeamDTO } from "../DTO/create-team-DTO";
 import { TeamModel } from "./team-model";
 
@@ -13,11 +14,11 @@ export interface IDataTeam{
 
 export interface ITeamRepository{
     createTeam(data: CreateTeamDTO): Promise<TeamModel>;
-    getUserByName(teamdId: string, name: string): Promise<{name: string; nickname: string}>;
+    getUserByName(teamdId: string, name: string): Promise<UserModel>;
 
 }
 
 export interface ITeamService{
     createTeam(data: CreateTeamDTO): Promise<TeamModel>;
-
+    getUserByName(teamdId: string, name: string): Promise<UserModel>;
 }

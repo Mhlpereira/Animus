@@ -2,6 +2,7 @@ import { inject, injectable } from "inversify";
 import { ITeamRepository, ITeamService } from "./team-interface";
 import { TeamModel } from "./team-model";
 import { CreateTeamDTO } from "../DTO/create-team-DTO";
+import { UserModel } from "../../user/user-model";
 
 @injectable()
 export class TeamService implements ITeamService{
@@ -20,7 +21,7 @@ export class TeamService implements ITeamService{
         return team;
     }
 
-    async getUserByName(teamId: string, name: string): Promise<{id: string, name: string, nickname: string}[]>{
+    async getUserByName(teamId: string, name: string): Promise<UserModel>{
 
         const users = await this.teamRepository.getUserByName(teamId, name);
 

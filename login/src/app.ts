@@ -1,3 +1,4 @@
+import { setupSwagger } from './../swagger';
 import 'reflect-metadata';
 import express from 'express';
 import { AuthMiddleware } from './middleware/auth-middleware';
@@ -13,6 +14,7 @@ inversifyServer.setConfig((server) => {
     server.use(authMiddleware.handler());
 });
 const app = inversifyServer.build();
+setupSwagger(app)
 const server = http.createServer(app);
 const io = new Server(server);
 const authMiddleware = container.get(AuthMiddleware);
