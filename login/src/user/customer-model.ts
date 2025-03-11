@@ -1,4 +1,5 @@
-import { ICustomerData } from "./user-interface";
+import { ICustomer, ICustomerData } from "./user-interface";
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export class CustomerModel{
     private _user_id: string;
@@ -14,6 +15,13 @@ export class CustomerModel{
         this._user_id = data.user_id;
     }
 
+    private static  schema = new Schema<ICustomer>({
+        user_id: { type: String, required: true, unique: true },
+        name: { type: String, unique: false }, 
+        nickname: { type: String, unique: false }, 
+    });
+
+    public static model: Model<ICustomer> = mongoose.model<ICustomer>('Customer', CustomerModel.schema);
     get user_id(): string {
         return this._user_id;
     }
@@ -38,6 +46,7 @@ export class CustomerModel{
     set birthday(value: Date){
         this._birthday = value;
     }
+
 
     
 }

@@ -21,6 +21,12 @@ export interface ICustomerData{
     birthday?: Date;
 }
 
+export interface ICustomer extends Document{
+    user_id: string;
+    name?: string;
+    nickname?: string;
+}
+
 export interface IUserRepository{
     createUserWithCustomer(data: {email: string, password: string , name: string, nickname: string, birthday: Date}): Promise<{user: UserModel}>;
     getUserId(id: string): Promise<string | null>;
