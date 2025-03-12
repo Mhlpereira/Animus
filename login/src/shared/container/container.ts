@@ -4,8 +4,8 @@ import { IUserRepository, IUserService } from '../../user/user-interface';
 import { UserService } from '../../user/user-service';
 import { IDatabaseConnection } from '../interface/database-connection-interface';
 import { IDatabase } from '../interface/database-interface';
-import { PgDatabase } from '../db/singleton/Pgdatabase';
-import { PgPoolClient } from '../db/singleton/PgPoolClient';
+import { PgDatabase } from '../db/postgres/Pgdatabase';
+import { PgPoolClient } from '../db/postgres/PgPoolClient';
 import { UserRepository } from '../../user/user-repository';
 import { AuthRepository } from '../../auth/auth-repository';
 import { AuthService } from '../../auth/auth-service';
@@ -20,7 +20,7 @@ import { UserGroupService } from '../../group/user-group/user-group-service';
 
 const container = new Container();
 
-//db
+//db-postgres
 container.bind<IDatabaseConnection>('IDatabaseConnection').to(PgPoolClient);
 container.bind<IDatabase>('IDatabase').to(PgDatabase).inSingletonScope();
 
