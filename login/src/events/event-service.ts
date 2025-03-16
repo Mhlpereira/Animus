@@ -1,9 +1,27 @@
+import { inject, injectable } from 'inversify'
+import { IEventRepository, IGroupEvent } from './event-interfaces'
 
+@injectable()
+export class EventService {
+    constructor(
+        @inject('IEventRepository') private eventRepository: IEventRepository,
+    ) {}
 
-export class EventService{
+    async createEventGroup(data: {
+        ownerId: string
+        date: Date
+        title: string
+        groupId: string
+        teamId?: string
+        description?: string
+        users?: string[]
+    }): Promise<IGroupEvent> {
+        const groupEvent = await this.eventRepository.createEventGroup(data)
 
-    async createEvent(){}
+        if(!groupEvent){
+            throw new Error('Error creating event')
+        }
 
-
-    async createGroupEvent(){}
+        return groupEvent
+    }
 }

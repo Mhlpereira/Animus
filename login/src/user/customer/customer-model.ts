@@ -1,4 +1,4 @@
-import { ICustomer, ICustomerData } from "../customer/customer-interface";
+import { ICustomerData } from "../customer/customer-interface";
 
 export class CustomerModel{
     private _user_id: string;
@@ -10,8 +10,8 @@ export class CustomerModel{
     constructor(data: ICustomerData = {}) {
         this._user_id = data.user_id;
         this._name = data.name ;
+        this._nickname= data.nickname;
         this._birthday = data.birthday ;
-        this._user_id = data.user_id;
     }
 
     get name(): string{
@@ -20,6 +20,10 @@ export class CustomerModel{
 
     get birthday(): Date{
         return this._birthday;
+    }
+
+    get nickname(): string{
+        return this._nickname;
     }
     
     set name(value: string){

@@ -7,7 +7,6 @@ import {
     response,
 } from 'inversify-express-utils'
 import { inject } from 'inversify'
-import { IUserService } from '../user/user-interface'
 import { Request, Response } from 'express'
 import { LoginDTO } from './DTO/login-DTO'
 import { IAuthService } from './auth-interface'
