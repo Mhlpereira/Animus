@@ -1,7 +1,4 @@
-/login/node_modules
+/backend/node_modules
 /.history
-/login/projeto.md
-/login/.env
-/login/to-do.md
-/login/coverage
-/middleware/.env
+/backend/projeto.md
+/backend/.env
