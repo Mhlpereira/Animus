@@ -1,7 +1,7 @@
 import { Db } from 'mongodb'
 
 export interface IMongoDB {
-    connect(): Promise<void>
+    connect(): Promise<Db>
     getDb(): Db
     close(): Promise<void>
 }

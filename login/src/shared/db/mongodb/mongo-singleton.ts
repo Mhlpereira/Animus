@@ -9,13 +9,14 @@ export class MongoDB implements IMongoDB {
         this.client = new MongoClient(this.uri);
     }
 
-    async connect(): Promise<void> {
+    async connect(): Promise<Db> {
         if (!this.db) {
             await this.client.connect();
             this.db = this.client.db('myapp');
             console.log('Conectado ao MongoDB');
         }
-    }
+        return this.db
+    } 
 
     getDb(): Db {
         if (!this.db) throw new Error('Banco de dados não inicializado');
