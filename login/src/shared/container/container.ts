@@ -1,3 +1,5 @@
+import { SocketManager } from './../../../sockets/socket-manager';
+import { EventSocket } from './../../../sockets/event-socket';
 import { Container } from 'inversify';
 import { AuthMiddleware } from '../../middleware/auth-middleware';
 import { IUserRepository, IUserService } from '../../user/user-interface';
@@ -18,6 +20,9 @@ import { UserGroupRepository } from '../../group/user-group/user-group-repositor
 import { UserGroupService } from '../../group/user-group/user-group-service';
 import { IMongoDB } from '../interface/mongo-database-interface';
 import { MongoDB } from '../db/mongodb/mongo-singleton';
+import { IEventRepository, IEventService } from '../../events/event-interfaces';
+import { EventService } from '../../events/event-service';
+import { EventRepository } from '../../events/event-repository';
 
 
 const container = new Container();
@@ -41,10 +46,17 @@ container.bind<IGroupService>('IGroupService').to(GroupService);
 container.bind<IUserGroupRepository>('IUserGroupRepository').to(UserGroupRepository);
 container.bind<IUserGroupService>('IUserGroupService').to(UserGroupService);    
 
+//event
+container.bind<IEventRepository>('IEventRepository').to(EventRepository);
+container.bind<IEventService>('IEventService').to(EventService);
+container.bind<EventSocket>('EventSocket').to(EventSocket);
 
 //auth
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);
 container.bind<IAuthService>('IAuthService').to(AuthService);
+
+//socket
+container.bind<SocketManager>('SocketManager').to(SocketManager);
 
 //middleware
 container.bind(AuthMiddleware).toSelf();

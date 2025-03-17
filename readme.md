@@ -2,6 +2,8 @@
 
 Software de gestão de academias e centro de treinamentos. 
 
+Aberto a contribuições, entre em contato comigo !
+
 ## O que é?
 
 Animus é um software de gestão para academias e centros de treinamento, projetado para otimizar a administração de aulas e a confirmação de presença dos alunos, reduzindo faltas e melhorando a organização dos profissionais.

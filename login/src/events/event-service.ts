@@ -15,7 +15,7 @@ export class EventService {
         teamId?: string
         description?: string
         users?: string[]
-    }): Promise<IGroupEvent> {
+    }): Promise<any> {
         const groupEvent = await this.eventRepository.createEventGroup(data)
 
         if(!groupEvent){
