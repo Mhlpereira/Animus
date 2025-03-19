@@ -8,8 +8,8 @@ import { WithId, Document, ObjectId } from 'mongodb';
 export class EventRepository implements IEventRepository{
 
     constructor(@inject ('IMongoDB') private mongo: IMongoDB){}
-
-    async createEventGroup(data:{ownerId: ObjectId, date: Date, hour: string, title: string, groupId: string,  teamId?: string,  description?: string}): Promise<any>{
+u
+    async createEventGroup(data:{ownerId: ObjectId, date: Date, hor: string, title: string, groupId: string,  teamId?: string,  description?: string, user: ObjectId[]}): Promise<any>{
         const db = await this.mongo.connect();
         const groupEvent = await db.collection('events').insertOne(data);
         return groupEvent;
@@ -19,6 +19,12 @@ export class EventRepository implements IEventRepository{
         const db = await this.mongo.connect();
         const user = await db.collection('events').updateOne({ _id: new ObjectId(eventId) }, { $addToSet: { users: new ObjectId(userId) } });
         return user;
+    }
+
+    async removeUserFromEvent(eventId: string, userId: string): Promise<Document>{
+        const db = await this.mongo.connect();
+        const user = await db.collection('events').updateOne({ _id: new ObjectId(eventId) }, { $pull: { users: new ObjectId(userId) } });
+        return user
     }
 
 

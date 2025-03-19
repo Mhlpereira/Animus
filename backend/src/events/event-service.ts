@@ -21,7 +21,8 @@ export class EventService {
     }): Promise<OutputCreateGroupDto> {
 
         const fmtOwnerId = this.idConverter(data.ownerId);
-        const dataWithOwnerId = { ...data, ownerId: fmtOwnerId }
+        const users: ObjectId[] = [fmtOwnerId]
+        const dataWithOwnerId = { ...data, ownerId: fmtOwnerId, users}
         const groupEvent = await this.eventRepository.createEventGroup(dataWithOwnerId)
 
         if(!groupEvent){
