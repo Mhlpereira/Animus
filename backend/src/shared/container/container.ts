@@ -1,4 +1,3 @@
-import { SocketManager } from '../../../sockets/socket-manager';
 import { EventSocket } from '../../../sockets/event-socket';
 import { Container } from 'inversify';
 import { AuthMiddleware } from '../../middleware/auth-middleware';
@@ -23,6 +22,7 @@ import { MongoDB } from '../db/mongodb/mongo-singleton';
 import { IEventRepository, IEventService } from '../../events/event-interfaces';
 import { EventService } from '../../events/event-service';
 import { EventRepository } from '../../events/event-repository';
+import { SocketManager } from '../../sockets/socket-manager';
 
 
 const container = new Container();

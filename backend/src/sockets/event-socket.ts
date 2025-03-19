@@ -1,13 +1,14 @@
 import { Socket } from 'socket.io'
 import { inject } from 'inversify'
-import { EventService } from '../src/events/event-service'
-import { IGroupEvent } from '../src/events/event-interfaces'
+import { EventService } from '../events/event-service'
+import { CreateGroupEventDTO } from '../events/DTO/create-group-event-dto'
+
 
 export class EventSocket {
     constructor(@inject('EventService') private eventService: EventService) {}
 
     public initialize(io: Socket) {
-        io.on('createEventGroup', async (data: IGroupEvent) => {
+        io.on('createEventGroup', async (data: CreateGroupEventDTO) => {
             try {
                 const createdGroupEvent =
                     await this.eventService.createEventGroup(data)

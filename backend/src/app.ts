@@ -7,7 +7,8 @@ import { container } from './shared/container/container';
 import './shared/routes/routes';
 import { Server } from 'socket.io';
 import http from 'http';
-import { SocketManager } from '../sockets/socket-manager';
+import { SocketManager } from './sockets/socket-manager';
+
 
 const inversifyServer = new InversifyExpressServer(container);
 inversifyServer.setConfig((server) => {
