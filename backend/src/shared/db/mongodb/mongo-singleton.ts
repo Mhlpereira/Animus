@@ -1,30 +1,32 @@
-import { MongoClient, Db } from 'mongodb';
+import mongoose, { Connection } from 'mongoose';
 import { IMongoDB } from '../../interface/mongo-database-interface';
 
 export class MongoDB implements IMongoDB {
-    private client: MongoClient;
-    private db: Db | null = null;
+    private connection: Connection | null = null;
 
-    constructor(private uri: string) {
-        this.client = new MongoClient(this.uri);
+    constructor(private uri: string) {}
+
+    async connect(): Promise<Connection> {
+        if (!this.connection) {
+            await mongoose.connect(this.uri, {
+                dbName: 'events', 
+            });
+            this.connection = mongoose.connection;
+            console.log('Connect to mongoDB');
+        }
+        return this.connection;
     }
 
-    async connect(): Promise<Db> {
-        if (!this.db) {
-            await this.client.connect();
-            this.db = this.client.db('myapp');
-            console.log('Conectado ao MongoDB');
-        }
-        return this.db
-    } 
-
-    getDb(): Db {
-        if (!this.db) throw new Error('Banco de dados não inicializado');
-        return this.db;
+    getConnectionMongo(): Connection {
+        if (!this.connection) throw new Error('Failed to connect to mongoDB');
+        return this.connection;
     }
 
     async close(): Promise<void> {
-        await this.client.close();
-        console.log('Conexão com o MongoDB fechada');
+        if (this.connection) {
+            await mongoose.disconnect();
+            this.connection = null;
+            console.log('Closed connection to mongoDB');
+        }
     }
 }

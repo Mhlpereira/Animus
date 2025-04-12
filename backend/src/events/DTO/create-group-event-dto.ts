@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 export class CreateGroupEventDTO{
     ownerId: string;
     date: Date;

@@ -1,70 +1,45 @@
 import { inject, injectable } from 'inversify'
-import { IEventRepository } from './event-interfaces'
-import { ObjectId } from 'mongodb'
-import { OutputGetGroupById } from './DTO/output-get-group-by-id'
+import { IEventRepository, IEventService } from './event-interfaces'
 import { OutputCreateGroupDto } from './DTO/Output-create-group-dto'
+import { CreateGroupEventDTO } from './DTO/create-group-event-dto'
+import { EventModel } from './event-model'
 
 @injectable()
-export class EventService {
+export class EventService implements IEventService {
     constructor(
         @inject('IEventRepository') private eventRepository: IEventRepository,
     ) {}
 
-    async createEventGroup(data: {
-        ownerId: string
-        date: Date
-        hour: string
-        title: string
-        groupId: string
-        teamId?: string
-        description?: string
-    }): Promise<OutputCreateGroupDto> {
-
-        const fmtOwnerId = this.idConverter(data.ownerId);
-        const users: ObjectId[] = [fmtOwnerId]
-        const dataWithOwnerId = { ...data, ownerId: fmtOwnerId, users}
-        const groupEvent = await this.eventRepository.createEventGroup(dataWithOwnerId)
-
-        if(!groupEvent){
+    async createEventGroup(data: CreateGroupEventDTO): Promise<OutputCreateGroupDto> {
+        const event = await this.eventRepository.createEventGroup(data)
+        if(!event){
             throw new Error('Error creating event')
         }
-
-        const groupEventDTO = new OutputCreateGroupDto();
-        groupEventDTO.date = groupEvent.date;
-        groupEventDTO.hour = groupEvent.hour;
-        groupEventDTO.title = groupEvent.title;
-        groupEventDTO.groupId = groupEvent.groupId;
-    
-
-        return groupEventDTO
+        const groupEvent: OutputCreateGroupDto = {
+            id: event.id,
+            title: event.title,
+            description: event.description,
+        }
+        return groupEvent
     }
 
-    async deleteEvent(id: string){
+    async deleteEvent(eventId: string): Promise<boolean> {
+        const event = await this.getEventById(eventId);
+        if(!event){
+            throw new Error('Event not found')
+        }
+        await this.eventRepository.deleteEvent(eventId)
 
-
-        await this.eventRepository.deleteEvent(id)
+        return true;
     }
 
-    async getEventById(id: string): Promise<OutputGetGroupById> {
+    async getEventById(id: string): Promise<EventModel> {
         const event = await this.eventRepository.getEventById(id);
 
         if(!event){
             throw new Error('Event not found')
         }
-
-        const eventDTO = new OutputGetGroupById();
-        eventDTO.id = event._id.toHexString();
-        eventDTO.ownerId = event.ownerId.toHexString();
-        eventDTO.date = event.date;
-        eventDTO.hour = event.hour;
-        eventDTO.title = event.title;
-        eventDTO.groupId = event.groupId;
-        eventDTO.teamId = event.teamId ? event.teamId : undefined ;
-        eventDTO.description = event.description ? event.description : undefined;
-        eventDTO.users = event.users ? event.users.map((user: ObjectId) => user.toHexString()) : undefined;
-
-
-        return eventDTO
+        return event
     }
 
     async addUserToEvent(eventId: string, userId: string): Promise<boolean> {
@@ -75,8 +50,14 @@ export class EventService {
         return true;
     }
 
-    idConverter(id: string): ObjectId {
-        return new ObjectId(id);
+    async removeUserFromEvent(eventId: string, userId: string): Promise<boolean> {
+        const user = await this.eventRepository.removeUserFromEvent(eventId, userId);
+        if(!user){
+            throw new Error('Error removing user from event')
+        }
+        return true;           
     }
+
+   
 }
 

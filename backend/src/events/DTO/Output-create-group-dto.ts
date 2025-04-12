@@ -1,8 +1,7 @@
 export class OutputCreateGroupDto {
-    date: Date;
-    hour: string;
+    id: string;
     title: string;
-    groupId: string;
+    groupId?: string;
     teamId?: string;
     description?: string;
 }
