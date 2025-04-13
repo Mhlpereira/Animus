@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Mhlpereira/Animus#readme",
   "description": "",
   "dependencies": {
+    "@jest/globals": "^29.7.0",
     "bcrypt": "^5.1.1",
     "class-transform": "^0.7.0",
     "class-validator": "^0.14.1",
@@ -27,7 +28,6 @@
     "inversify": "^6.2.2",
     "inversify-express-utils": "^6.4.10",
     "jsonwebtoken": "^9.0.2",
-    "moongose": "^1.0.0",
     "pg": "^8.13.1",
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
@@ -56,7 +56,7 @@
     "prettier": "3.4.2",
     "supertest": "^7.0.0",
     "swagger-autogen": "^2.23.7",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.22.0"

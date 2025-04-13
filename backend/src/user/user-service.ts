@@ -55,7 +55,11 @@ export class UserService implements IUserService {
         }
 
 
-        const userLogin : UserLoginDTO = { id: userData.id, email: userData.email}
+        const userLogin : UserLoginDTO = { 
+            id: userData.id,
+            name: userData.name,
+            nickname: userData.nickname ?? null,
+            email: userData.email}
         return userLogin;
     }
 

@@ -28,22 +28,24 @@ export class AuthService implements IAuthService{
     }
 
 
-    private async generateTokens(userId: string, userEmail: string){
+    private async generateTokens(userId: string, userName:string, userNickname: string | null, userEmail: string){
+
+
+        const payload = {
+            userId: userId,
+            name: userName,
+            nickname: userNickname ?? null,
+            email: userEmail
+        }
 
         const accessToken = jwt.sign(
-            {
-                userId: userId,
-                email: userEmail
-            },
+            payload,
             this.JWT_SECRET,
             { expires_in: '15m'}
         );
 
         const refreshToken = jwt.sign(
-            {
-                userId: userId,
-                email: userEmail
-            },
+            payload,
             this.REFRESH_SECRET,
             { expires_in: '15m'}
         );

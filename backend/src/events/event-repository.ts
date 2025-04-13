@@ -67,6 +67,10 @@ export class EventRepository implements IEventRepository{
         }
     }
 
+    async confirmInGroupEvent(id: string): Promise<>{
+        
+    }
+
     async addUserToEvent(eventId: string, userId: string): Promise<boolean> {
         const db = await this.pg.getConnection()
         try{
