@@ -1,31 +1,33 @@
-## Animus 
+# Animus
 
-Software de gestão de academias e centro de treinamentos. 
+**Management software for sports academies and training centers.**
 
-Aberto a contribuições, entre em contato comigo !
+Animus is where this idea started — the original open-source prototype of a system to manage classes and student attendance for sports academies, reducing no-shows and helping instructors stay organized. I built it because I train jiu-jitsu and kept seeing the same problem at small academies.
 
-## O que é?
+> Open to contributions — feel free to reach out!
 
-Animus é um software de gestão para academias e centros de treinamento, projetado para otimizar a administração de aulas e a confirmação de presença dos alunos, reduzindo faltas e melhorando a organização dos profissionais.
+## What it is
 
-## Arquitetura 
+Animus is management software for academies and training centers, designed to streamline class administration and student check-in — cutting down on no-shows and improving organization for instructors and owners.
 
-Construído com arquitetura de microserviços, o sistema segue os princípios do SOLID e utiliza o padrão Singleton para garantir modularidade, reutilização de código e escalabilidade. Além disso, é um software multitenant, permitindo que diferentes academias utilizem a plataforma de forma independente.
+## Architecture
+
+Built with a **microservices** architecture, following **SOLID** principles and using the **Singleton** pattern for modularity, code reuse and scalability. It's **multi-tenant**, so different academies can use the platform independently.
 
 ## Tech Stack
 
-- Node.js – Utilizados para criar APIs RESTful de forma eficiente e escalável, seguindo boas práticas de arquitetura.
-- PostgreSQL – Escolhido como banco de dados relacional para armazenar dados estruturados com consistência e confiabilidade.
-- MongoDB – Utilizado para armazenar informações sobre aulas, garantindo mais flexibilidade e agilidade na consulta desses dados.
-- Cloudinary – Plataforma usada para armazenamento de imagens e vídeos curtos, garantindo uploads rápidos e gratuitos.
-- Jest – Ferramenta de testes unitários para garantir a confiabilidade e qualidade do código.
-- Socketio - Para ter configurar o websocket e ter uma menor latência e comunicação em tempo real.
+- **Node.js** — RESTful APIs, built efficiently and with scalability in mind, following good architectural practices
+- **PostgreSQL** — relational database for structured data with consistency and reliability
+- **MongoDB** — stores class-related data, for more flexibility and faster queries
+- **Cloudinary** — image and short-video storage, with fast, free uploads
+- **Jest** — unit testing to ensure code reliability and quality
+- **Socket.IO** — WebSocket setup for low-latency, real-time communication
 
+## Environment variables
 
+Configure your `.env` with:
 
-## Configs .ENV
-
-- Configure seu .Env com essas var
+```
 POSTGRES_HOST
 POSTGRES_USER
 POSTGRES_PASSWORD
@@ -33,16 +35,28 @@ POSTGRES_DB
 POSTGRES_PORT
 POSTGRES_SSL
 
-
-JWT_SECRET & REFRESH_SECRET
-
-- execute para gerar um secret para seu jwt e gere outro para refresh no windows
-```
-node -e 'console.log(require('crypto').randomBytes(32).toString('hex'))'
+JWT_SECRET
+REFRESH_SECRET
 ```
 
-- no linux com openssl
+Generate a secret for JWT (and another for refresh):
 
-```
+```bash
+# Windows
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# Linux (openssl)
 openssl rand -hex 32
 ```
+
+## Project history
+
+Animus was the kickstarter for an idea I kept iterating on:
+
+1. **Animus** (this repo) — the original open-source prototype where the idea began.
+2. **[Prime](https://github.com/Mhlpereira/prime)** — a restructured full-stack version with a dedicated frontend and containerized infrastructure (Docker Compose, Nginx).
+3. **Gambatte** — the current closed-source product, rebuilt with a spec-driven development approach, launching in 2026. *("Gambatte" / 頑張って means "do your best" in Japanese.)*
+
+---
+
+Built by [Mário Henrique Lino Pereira](https://github.com/Mhlpereira).
